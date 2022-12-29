@@ -1,0 +1,4 @@
+Mastodon.py==1.8.0
+emoji==2.2.0
+celery==5.2.7
+redis==4.4.0

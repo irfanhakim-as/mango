@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+read -p "Enter Image Version [latest]: " IMAGE_VERSION
+
+readonly APP_NAME="Mango"
+readonly REGISTRY="ghcr.io"
+readonly REPOSITORY="irfanhakim-as"
+readonly IMAGE_NAME="mango"
+readonly IMAGE_VERSION=${IMAGE_VERSION:-latest}
+
+echo "#======Building $APP_NAME v$IMAGE_VERSION at $(date +"%T") on Github======#"
+
+docker build --platform linux/amd64 -t $IMAGE_NAME:latest . \
+&& docker images \
+&& docker tag $IMAGE_NAME:latest $REGISTRY/$REPOSITORY/$IMAGE_NAME:$IMAGE_VERSION \
+&& docker push $REGISTRY/$REPOSITORY/$IMAGE_NAME:$IMAGE_VERSION \
+&& docker rmi $REGISTRY/$REPOSITORY/$IMAGE_NAME:$IMAGE_VERSION
+
+echo "#======Build v$IMAGE_VERSION on Github Complete at $(date +"%T")======#"
