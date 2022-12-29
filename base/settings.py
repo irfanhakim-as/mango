@@ -23,9 +23,9 @@ COMPULSORY_SETTINGS = list(
     'SECRET_KEY, ALLOWED_HOSTS, BOT_ID, ACCESS_TOKEN, API_BASE_URL, CELERY_BROKER_URL, CELERY_RESULT_BACKEND, CELERY_TIMEZONE'
     ).split(',')
 )
-BOT_ID = os.getenv('BOT_ID','mango')
-ACCESS_TOKEN = os.getenv('ACCESS_TOKEN','/base/base/mastodon.secret')
-API_BASE_URL = os.getenv('API_BASE_URL','https://botsin.space/')
+BOT_ID = os.getenv('BOT_ID', 'mango')
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN', '/base/base/mastodon.secret')
+API_BASE_URL = os.getenv('API_BASE_URL', 'https://botsin.space/')
 
 
 ##################################################################
