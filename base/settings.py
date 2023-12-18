@@ -19,34 +19,43 @@ from pathlib import Path
 ##################################################################
 
 COMPULSORY_SETTINGS = list(
-    setting.strip() for setting in os.getenv('COMPULSORY_SETTINGS',
-    'SECRET_KEY, ALLOWED_HOSTS, BOT_ID, ACCESS_TOKEN, API_BASE_URL, CELERY_BROKER_URL, CELERY_RESULT_BACKEND, CELERY_TIMEZONE'
-    ).split(',')
+    setting.strip() for setting in os.getenv("COMPULSORY_SETTINGS",
+    "SECRET_KEY, ALLOWED_HOSTS, SCHEDULER_TIMEZONE, CELERY_BROKER_URL, CELERY_RESULT_BACKEND, CELERY_TIMEZONE, ACCESS_TOKEN, API_BASE_URL, BOT_ID, DEFAULT_VISIBILITY"
+    ).split(",")
 )
-BOT_ID = os.getenv('BOT_ID', 'mango')
-ACCESS_TOKEN = os.getenv('ACCESS_TOKEN', '/base/base/mastodon.secret')
-API_BASE_URL = os.getenv('API_BASE_URL', 'https://botsin.space/')
+SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
+
+
+##################################################################
+# Mastodon Settings
+##################################################################
+
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "/base/base/mastodon.secret")
+API_BASE_URL = os.getenv("API_BASE_URL")
+BOT_ID = os.getenv("BOT_ID")
+DEFAULT_VISIBILITY = os.getenv("DEFAULT_VISIBILITY", "public")
+POST_LIMIT = int(os.getenv("POST_LIMIT", "1"))
 
 
 ##################################################################
 # Celery Settings
 ##################################################################
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_BACKEND', 'redis://localhost:6379/0')
-CELERY_TIMEZONE = os.getenv('CELERY_TIMEZONE', 'Asia/Kuala_Lumpur')
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_BACKEND", "redis://localhost:6379/0")
+CELERY_TIMEZONE = SCHEDULER_TIMEZONE
 
 
 ##################################################################
 # Database Settings
 ##################################################################
 
-DB_TYPE = os.getenv('DB_TYPE', 'postgresql') # database type
-DB_NAME = os.getenv('DB_NAME') # database name
-DB_USER = os.getenv('DB_USER') # database username
-DB_PASS = os.getenv('DB_PASS') # database password
-DB_HOST = os.getenv('DB_HOST') # database host
-DB_PORT = int(os.getenv('DB_PORT', '5432')) # database port
+DB_TYPE = os.getenv("DB_TYPE", "postgresql") # database type
+DB_NAME = os.getenv("DB_NAME") # database name
+DB_USER = os.getenv("DB_USER") # database username
+DB_PASS = os.getenv("DB_PASS") # database password
+DB_HOST = os.getenv("DB_HOST") # database host
+DB_PORT = int(os.getenv("DB_PORT", "5432")) # database port
 
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
@@ -60,12 +69,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG',False) == 'true'
+DEBUG = os.getenv("DEBUG", False) == "true"
 
-ALLOWED_HOSTS = list(os.getenv('ALLOWED_HOSTS','*').split(','))
+ALLOWED_HOSTS = list(os.getenv("DOMAIN", "*").split(","))
 
 
 # Application definition
