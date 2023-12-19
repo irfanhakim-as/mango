@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from base.methods import get_post_model
 from base.models.base import ObjectSchedule
-from base.models.post import PostItem
+PostModel = get_post_model()
 
 
 #====================SCHEDULE: POST====================#
@@ -10,16 +11,7 @@ class PostSchedule(ObjectSchedule):
         verbose_name = "Post Schedule"
         verbose_name_plural = "post schedules"
 
-    SubjectReference = PostItem
-
-    # subject = models.ForeignKey(
-    #     PostItem,
-    #     blank=False,
-    #     null=False,
-    #     on_delete=models.CASCADE,
-    #     verbose_name=_("Subject"),
-    #     help_text=_("Scheduled subject.")
-    # )
+    SubjectReference = PostModel
 
     receiver = models.CharField(
         blank=True,
