@@ -4,7 +4,9 @@ import re
 import urllib.request
 from datetime import datetime
 from dateutil import tz
+from django.apps import apps as django_apps
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from lib.messages import (
     ICONS,
     MESSAGES,
@@ -13,7 +15,21 @@ logger = logging.getLogger("base")
 
 
 #====================SETTINGS: GETATTR====================#
+POST_MODEL = getattr(settings, "POST_MODEL")
 TIME_ZONE = getattr(settings, "TIME_ZONE")
+
+
+#====================MODELS: GET POST MODEL====================#
+def get_post_model():
+    # return the Post model that is active in this project
+    try:
+        return django_apps.get_model(POST_MODEL, require_ready=False)
+    except ValueError:
+        raise ImproperlyConfigured("POST_MODEL must be of the form 'app_label.model_name'")
+    except LookupError:
+        raise ImproperlyConfigured(
+            "POST_MODEL refers to model '%s' that has not been installed" % POST_MODEL
+        )
 
 
 #====================MODELS: INITIALISE DB====================#
