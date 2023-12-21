@@ -1,7 +1,14 @@
 import logging
+import random
+from django.conf import settings
 from base.methods import message
 from lib.mastodon import send_post
 logger = logging.getLogger("base")
+
+
+#====================SETTINGS: GETATTR====================#
+ORGANIC_POSTS = getattr(settings, "ORGANIC_POSTS")
+POST_LIMIT = getattr(settings, "POST_LIMIT")
 
 
 #====================BASE: SCHEDULE POST====================#
@@ -22,9 +29,19 @@ def schedule_post(schedule_model, subject_object, **kwargs):
 
 
 #====================BASE: POST SCHEDULER====================#
-def post_scheduler(limit, post_objects):
-    if limit <= 0:
-        return
+def post_scheduler(pending_objects, updating_objects, **kwargs):
+    limit = kwargs.get("limit", POST_LIMIT)
+    organic = kwargs.get("organic", ORGANIC_POSTS)
+
+    # set count of posts to be sent
+    limit = limit if limit > 0 else 100
+    if organic:
+        count = random.randint(1, limit)
+    else:
+        count = limit
+
+    # limit pending objects to count and combine the two querysets
+    post_objects = pending_objects[:count] | updating_objects
 
     if not post_objects.exists():
         log_message = message("LOG_EVENT", event="No pending post objects were found")
