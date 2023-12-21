@@ -95,14 +95,6 @@ class ObjectItem(models.Model):
         help_text=_("Tags of the object item.")
     )
 
-    # published = models.DateTimeField(
-    #     blank=False,
-    #     null=False,
-    #     default=timezone.now,
-    #     verbose_name=_("Item published date"),
-    #     help_text=_("Date of publication of the object item.")
-    # )
-
     def __str__(self):
         return str(self.pk)
 
