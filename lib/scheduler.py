@@ -1,14 +1,8 @@
-from django.conf import settings
 from base.models import PostSchedule
 from base.scheduler import (
     post_scheduler as _post_scheduler,
     schedule_post as _schedule_post,
 )
-
-
-#====================SETTINGS: GETATTR====================#
-ORGANIC_POSTS = getattr(settings, "ORGANIC_POSTS")
-POST_LIMIT = getattr(settings, "POST_LIMIT")
 
 
 #====================SCHEDULER: SCHEDULE POST====================#
