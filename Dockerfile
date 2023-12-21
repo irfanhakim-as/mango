@@ -11,6 +11,8 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
 
 COPY entrypoint.sh /
 
+COPY root/*.py /${APP}/
+
 COPY base/*.py ${APP}/
 
 COPY models/*.py ${APP}/models/
