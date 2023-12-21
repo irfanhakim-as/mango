@@ -13,6 +13,8 @@ COPY entrypoint.sh /
 
 COPY root/*.py /${APP}/
 
+COPY settings/*.py ${APP}/settings/
+
 COPY base/*.py ${APP}/
 
 COPY models/*.py ${APP}/models/
