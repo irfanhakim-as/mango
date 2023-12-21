@@ -28,9 +28,3 @@ class PostSchedule(ObjectSchedule):
         verbose_name=_("Visibility"),
         help_text=_("Visibility of the post.")
     )
-
-    def __str__(self):
-        return str(self.pk)
-
-    def __unicode__(self):
-        return str(self.pk)
