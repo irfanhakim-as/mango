@@ -13,12 +13,12 @@ COPY entrypoint.sh /
 
 COPY root/*.py /${APP}/
 
+COPY models/*.py ${APP}/models/
+
 COPY settings/*.py ${APP}/settings/
+
+COPY commands/*.py ${APP}/management/commands/
 
 COPY base/*.py ${APP}/
 
-COPY models/*.py ${APP}/models/
-
 COPY lib/*.py lib/
-
-COPY commands/*.py ${APP}/management/commands/
