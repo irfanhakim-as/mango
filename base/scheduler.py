@@ -88,6 +88,6 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
             log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, post_object.name))
             logger.info(log_message)
 
-        # delete post object if it has been sent
+        # delete post schedule object if it has been sent
         if post_object.subject.post_id:
             post_object.delete()
