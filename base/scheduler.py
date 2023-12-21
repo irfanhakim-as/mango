@@ -7,6 +7,7 @@ logger = logging.getLogger("base")
 
 
 #====================SETTINGS: GETATTR====================#
+DB_TYPE = getattr(settings, "DB_TYPE")
 ORGANIC_POSTS = getattr(settings, "ORGANIC_POSTS")
 POST_LIMIT = getattr(settings, "POST_LIMIT")
 
@@ -40,8 +41,12 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
     else:
         count = limit
 
-    # limit pending objects to count and combine the two querysets
-    post_objects = pending_objects[:count] | updating_objects
+    if DB_TYPE == "postgresql":
+        # limit pending objects to count and combine the two querysets
+        post_objects = pending_objects[:count] | updating_objects
+    else:
+        # databases such as MariaDB does not support limiting querysets
+        post_objects = pending_objects | updating_objects
 
     if not post_objects.exists():
         log_message = message("LOG_EVENT", event="No pending post objects were found")
