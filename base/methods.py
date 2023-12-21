@@ -32,11 +32,6 @@ def get_post_model():
         )
 
 
-#====================MODELS: INITIALISE DB====================#
-def init_db():
-    pass
-
-
 #====================MODELS: GET VALUES LIST====================#
 def get_values_list(field, **kwargs):
     model = kwargs.get("model")
