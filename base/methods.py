@@ -15,8 +15,14 @@ logger = logging.getLogger("base")
 
 
 #====================SETTINGS: GETATTR====================#
+DEBUG = getattr(settings, "DEBUG")
 POST_MODEL = getattr(settings, "POST_MODEL")
 TIME_ZONE = getattr(settings, "TIME_ZONE")
+
+
+#====================BASE: IS DEBUG====================#
+def is_debug():
+    return DEBUG is True
 
 
 #====================MODELS: GET POST MODEL====================#
