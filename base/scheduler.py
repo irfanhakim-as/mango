@@ -1,7 +1,10 @@
 import logging
 import random
 from django.conf import settings
-from base.methods import message
+from base.methods import (
+    is_debug,
+    message,
+)
 from lib.mastodon import send_post
 logger = logging.getLogger("base")
 
@@ -49,8 +52,9 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         post_objects = pending_objects | updating_objects
 
     if not post_objects.exists():
-        log_message = message("LOG_EVENT", event="No pending post objects were found")
-        logger.info(log_message)
+        if is_debug():
+            log_message = message("LOG_EVENT", event="No pending post objects were found")
+            logger.info(log_message)
         return
 
     for post_object in post_objects:
