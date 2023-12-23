@@ -94,15 +94,13 @@ def message(key, **kwargs):
 #====================UTILS: ICON====================#
 def icon(**kwargs):
     key = kwargs.get("key")
+    alias = ":%s:" % kwargs.get("alias", ICONS.get(key))
     spacer = kwargs.get("spacer", False)
-    alias = kwargs.get("alias", ICONS.get(key))
-    icon = emoji.emojize(":%s:" % alias)
+    icon = emojize(alias)
     if not emoji.is_emoji(icon):
         return ""
     else:
-        if spacer:
-            icon += " "
-        return icon
+        return icon + " " if spacer else icon
 
 
 #====================UTILS: READ URL====================#
