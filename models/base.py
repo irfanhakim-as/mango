@@ -1,6 +1,10 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from base.methods import (
+    demojize,
+    has_emoji,
+)
 
 
 #====================BASE: OBJECT SCHEDULE META====================#
@@ -94,6 +98,26 @@ class ObjectItem(models.Model):
         verbose_name=_("Item tags"),
         help_text=_("Tags of the object item.")
     )
+
+    def clean(self):
+        # run parent clean method
+        super().clean()
+        # iterate through all fields of the model
+        for field in self._meta.get_fields():
+            # if field is a CharField or TextField and has a value
+            if isinstance(field, (models.CharField, models.TextField)) and field.value_from_object(self):
+                # get field value
+                field_value = getattr(self, field.name)
+                # if field value is a string and has any emoji
+                if isinstance(field_value, str) and has_emoji(field_value):
+                    # set field value to its demojized value
+                    setattr(self, field.name, demojize(field_value))
+
+    def save(self, *args, **kwargs):
+        # run clean method beforehand
+        self.clean()
+        # run parent save method
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return str(self.pk)
