@@ -64,6 +64,26 @@ def escape_md(text):
     return text
 
 
+#====================UTILS: COUNT EMOJI====================#
+def count_emoji(text):
+    return emoji.emoji_count(text)
+
+
+#====================UTILS: HAS EMOJI====================#
+def has_emoji(text):
+    return count_emoji(text) > 0
+
+
+#====================UTILS: EMOJIZE====================#
+def emojize(text):
+    return emoji.emojize(text, language="alias")
+
+
+#====================UTILS: DEMOJIZE====================#
+def demojize(text):
+    return emoji.replace_emoji(text, replace=lambda chars, data_dict: data_dict["en"]) if has_emoji(text) else text
+
+
 #====================UTILS: MESSAGE====================#
 def message(key, **kwargs):
     # if not key.startswith("LOG_"):
