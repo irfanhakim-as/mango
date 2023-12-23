@@ -2,6 +2,7 @@ import logging
 import random
 from django.conf import settings
 from base.methods import (
+    count_emoji,
     emojize,
     is_debug,
     message,
@@ -63,6 +64,18 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         post_title = emojize(post_object.subject.title)
         post_tags = emojize(" " + " ".join(["#" + i for i in post_object.subject.tags]) if post_object.subject.tags else "")
         post_link = emojize("\n\n%s" % post_object.subject.link if post_object.subject.link else "")
+
+        # ensure title + tags + link does not exceed the character limit. link counts as 23 characters + 2 characters (newlines). emoji counts as 2 characters.
+        char_limit = 500
+        title_count = len(post_title)
+        tags_count = len(post_tags)
+        link_count = 25 if post_link else 0
+        emoji_count = count_emoji(post_title + post_tags + post_link)
+        # prioritise removing tags, then limiting title to accommodate link
+        if title_count + tags_count + link_count + emoji_count > char_limit:
+            post_tags = ""
+            emoji_count = count_emoji(post_title + post_tags + post_link)
+            post_title = post_title[:char_limit-link_count-emoji_count]
 
         # prepare content
         content = message(
