@@ -2,6 +2,7 @@ import logging
 import random
 from django.conf import settings
 from base.methods import (
+    emojize,
     is_debug,
     message,
 )
@@ -58,20 +59,10 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         return
 
     for post_object in post_objects:
-        # ensure title + tags + link does not exceed 500 characters. link counts as 23 characters + 2 characters (newlines).
-        post_title = post_object.subject.title
-        post_tags = " " + " ".join(["#" + i for i in post_object.subject.tags]) if post_object.subject.tags else ""
-        post_link = "\n\n%s" % post_object.subject.link if post_object.subject.link else ""
-        if len(post_title + post_tags + post_link) > 500:
-            # remove tags
-            post_tags = ""
-        if len(post_title + post_tags + post_link) > 500:
-            # limit post title to (500-23-2)
-            if post_link:
-                post_title = post_title[:475]
-            # limit post title to 500
-            else:
-                post_title = post_title[:500]
+        # prepare post title, tags, and link
+        post_title = emojize(post_object.subject.title)
+        post_tags = emojize(" " + " ".join(["#" + i for i in post_object.subject.tags]) if post_object.subject.tags else "")
+        post_link = emojize("\n\n%s" % post_object.subject.link if post_object.subject.link else "")
 
         # prepare content
         content = message(
