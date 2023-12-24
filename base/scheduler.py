@@ -49,12 +49,11 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
     else:
         count = limit
 
+    # limit pending objects to count for supported databases
     if DB_TYPE == "postgresql":
-        # limit pending objects to count and combine the two querysets
-        post_objects = pending_objects[:count] | updating_objects
-    else:
-        # databases such as MariaDB does not support limiting querysets
-        post_objects = pending_objects | updating_objects
+        pending_objects = pending_objects[:count]
+    # combine pending and updating objects
+    post_objects = pending_objects | updating_objects
 
     if not post_objects.exists():
         if is_debug():
