@@ -36,7 +36,7 @@ ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "/base/base/mastodon.secret")
 API_BASE_URL = os.getenv("API_BASE_URL")
 BOT_ID = os.getenv("BOT_ID")
 DEFAULT_VISIBILITY = os.getenv("DEFAULT_VISIBILITY", "public")
-POST_LIMIT = int(os.getenv("POST_LIMIT", "1"))
+POST_LIMIT = int(os.getenv("POST_LIMIT", "0"))
 
 
 ##################################################################
