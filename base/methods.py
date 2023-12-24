@@ -64,6 +64,12 @@ def escape_md(text):
     return text
 
 
+#====================UTILS: SANITISE STRING====================#
+def sanitise_string(text):
+    # remove characters that are not letters or numbers
+    return re.sub(r"[^a-zA-Z0-9]", "", text)
+
+
 #====================UTILS: COUNT EMOJI====================#
 def count_emoji(text):
     return emoji.emoji_count(text)
