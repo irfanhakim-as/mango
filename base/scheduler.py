@@ -1,4 +1,5 @@
 import logging
+import math
 import random
 from django.conf import settings
 from base.methods import (
@@ -42,7 +43,9 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
     # set count of posts to be sent
     limit = limit if limit > 0 else 100
     if organic:
-        count = random.randint(1, limit)
+        minimum = limit / 3
+        minimum = math.ceil(minimum) if minimum % 1 != 0 else int(minimum)
+        count = random.randint(minimum, limit)
     else:
         count = limit
 
