@@ -15,7 +15,7 @@ COPY root/*.py /${APP}/
 
 COPY models/*.py ${APP}/models/
 
-COPY settings/*.py ${APP}/settings/
+COPY settings/*.py ${APP}/conf/
 
 COPY commands/*.py ${APP}/management/commands/
 
