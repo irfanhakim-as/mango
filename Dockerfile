@@ -4,12 +4,12 @@ ENV APP="base"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
+COPY entrypoint.sh /
+
 COPY requirements.txt /tmp/
 
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
-
-COPY entrypoint.sh /
 
 COPY root/*.py /${APP}/
 
