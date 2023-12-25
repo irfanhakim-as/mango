@@ -3,7 +3,10 @@ import logging
 import re
 import urllib.request
 from datetime import datetime
-from dateutil import tz
+from dateutil import (
+    parser,
+    tz,
+)
 from django.apps import apps as django_apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -163,15 +166,18 @@ def get_datetime(timezone=TIME_ZONE):
 
 
 #====================DATETIME: MAKE TIMEZONE AWARE DATETIME====================#
-def make_aware_datetime(tzvar, **kwargs):
+def make_aware_datetime(**kwargs):
     datestr = kwargs.get("datestr")
-    datefmt = kwargs.get("datefmt", "%Y-%m-%d")
     datevar = kwargs.get("datevar")
-    # make naive datetime out of string
+    tz_name = kwargs.get("tz_name", "UTC")
+    tz_target = kwargs.get("tz_target", tz.gettz(tz_name))
+    # make naive or timezone aware datetime out of string
     if datestr:
-        datevar = datetime.strptime(datestr, datefmt)
+        datevar = parser.parse(datestr)
     # make timezone aware datetime out of naive datetime
-    return datevar.replace(tzinfo=tz.gettz(tzvar))
+    if datevar.tzinfo is None or datevar.tzinfo.utcoffset(datevar) is None:
+        datevar = datevar.replace(tzinfo=tz_target)
+    return datevar
 
 
 #====================DATETIME: GLOBALISE LOCAL DATETIME====================#
