@@ -134,7 +134,7 @@ def unique_list(l):
 #====================DATETIME: CONVERT DATETIME TIMEZONE====================#
 def convert_timezone(datevar, **kwargs):
     tz_name = kwargs.get("tz_name", TIME_ZONE)
-    tz_target = kwargs.get("target_tz", tz.gettz(tz_name))
+    tz_target = kwargs.get("tz_target", tz.gettz(tz_name))
     # convert timezone aware datetime to another timezone
     return datevar.astimezone(tz_target)
 
