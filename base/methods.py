@@ -181,13 +181,13 @@ def make_aware_datetime(**kwargs):
 
 
 #====================DATETIME: GLOBALISE LOCAL DATETIME====================#
-def globalise_local_datetime(tzvar=TIME_ZONE, **kwargs):
+def globalise_local_datetime(**kwargs):
     datestr = kwargs.get("datestr")
-    datefmt = kwargs.get("datefmt", "%Y-%m-%d")
     datevar = kwargs.get("datevar")
+    tz_name = kwargs.get("tz_name", TIME_ZONE)
     # make timezone aware datetime out of string
     if datestr:
-        datevar = make_aware_datetime(tzvar, datestr=datestr, datefmt=datefmt)
+        datevar = make_aware_datetime(**kwargs)
     # convert timezone aware datetime to UTC
     return convert_timezone(datevar, tz_name="UTC")
 
