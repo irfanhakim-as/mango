@@ -132,9 +132,11 @@ def unique_list(l):
 
 
 #====================DATETIME: CONVERT DATETIME TIMEZONE====================#
-def convert_timezone(datevar, tzvar=TIME_ZONE):
+def convert_timezone(datevar, **kwargs):
+    tz_name = kwargs.get("tz_name", TIME_ZONE)
+    tz_target = kwargs.get("target_tz", tz.gettz(tz_name))
     # convert timezone aware datetime to another timezone
-    return datevar.astimezone(tz.gettz(tzvar))
+    return datevar.astimezone(tz_target)
 
 
 #====================DATETIME: GET CURRENT DATETIME====================#
@@ -142,9 +144,9 @@ def get_datetime(timezone=TIME_ZONE):
     # now according to timezone
     now = datetime.now(tz=tz.gettz(timezone))
     # now in UTC
-    utc_now = convert_timezone(now, "UTC")
+    utc_now = convert_timezone(now, tz_name="UTC")
     # now in system timezone
-    sys_now = convert_timezone(now)
+    sys_now = convert_timezone(now, tz_name=timezone)
     # now as date string
     today = now.date()
     # now as gregorian date string
@@ -181,7 +183,7 @@ def globalise_local_datetime(tzvar=TIME_ZONE, **kwargs):
     if datestr:
         datevar = make_aware_datetime(tzvar, datestr=datestr, datefmt=datefmt)
     # convert timezone aware datetime to UTC
-    return convert_timezone(datevar, "UTC")
+    return convert_timezone(datevar, tz_name="UTC")
 
 
 #====================DATETIME: MAKE TIME STRING====================#
