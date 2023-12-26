@@ -26,21 +26,24 @@ def instantiate_mastodon(access_token, home_instance):
 
 
 #====================MASTODON: CLEAN VISIBILITY====================#
-def clean_visibility(visibility):
+def clean_visibility(visibility, **kwargs):
+    default_visibility = kwargs.get("default_visibility", DEFAULT_VISIBILITY)
     if visibility and visibility.lower() in ["public", "unlisted", "private", "direct"]:
         return visibility.lower()
     else:
-        return DEFAULT_VISIBILITY.lower()
+        return default_visibility.lower()
 
 
 #====================MASTODON: SEND POST====================#
 def send_post(content, **kwargs):
+    access_token = kwargs.get("access_token", ACCESS_TOKEN)
+    api_base_url = kwargs.get("api_base_url", API_BASE_URL)
     post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     visibility = kwargs.get("visibility")
 
     # set up mastodon
-    mastodon = instantiate_mastodon(ACCESS_TOKEN, API_BASE_URL)
+    mastodon = instantiate_mastodon(access_token, api_base_url)
 
     if not mastodon:
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
@@ -67,9 +70,10 @@ def send_post(content, **kwargs):
 
 
 #====================MASTODON: CHECK MASTODON HEALTH====================#
-def check_mastodon_health():
+def check_mastodon_health(**kwargs):
+    bot_id = kwargs.get("bot_id", BOT_ID)
     visibility = "private"
-    content = message("MASTODON_TEST", visibility=visibility, name=BOT_ID)
+    content = message("MASTODON_TEST", visibility=visibility, name=bot_id)
     try:
         # send test post
         send_post(content=content, visibility=visibility)
