@@ -79,3 +79,34 @@ def check_mastodon_health():
     else:
         log_message = message("LOG_EVENT", event="Test post has been sent")
         logger.info(log_message)
+
+
+#====================MASTODON: UPDATE ACCOUNT====================#
+def update_account(**kwargs):
+    access_token = kwargs.get("access_token", ACCESS_TOKEN)
+    api_base_url = kwargs.get("api_base_url", API_BASE_URL)
+    bot = kwargs.get("bot")
+    discoverable = kwargs.get("discoverable")
+    display_name = kwargs.get("display_name")
+    fields = kwargs.get("fields")
+    locked = kwargs.get("locked")
+    note = kwargs.get("note")
+
+    # set up mastodon
+    mastodon = instantiate_mastodon(access_token, api_base_url)
+    if not mastodon:
+        log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
+        logger.warning(log_message)
+        return
+
+    params = dict(
+        bot=bot,
+        discoverable=discoverable,
+        display_name=display_name,
+        fields=fields,
+        locked=locked,
+        note=note,
+    )
+
+    # update mastodon account
+    return mastodon.account_update_credentials(**params)
