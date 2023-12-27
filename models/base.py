@@ -172,6 +172,14 @@ class ObjectAccount(models.Model):
         help_text=_("Specifies whether the account should appear in the user directory.")
     )
 
+    is_enabled = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        verbose_name=_("Is enabled"),
+        help_text=_("Specifies whether the account is enabled for operations.")
+    )
+
     display_name = models.CharField(
         blank=True,
         null=True,
@@ -229,6 +237,14 @@ class ObjectFeed(models.Model):
         max_length=255,
         verbose_name=_("Endpoint"),
         help_text=_("The endpoint or URL of the feed.")
+    )
+
+    is_enabled = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        verbose_name=_("Is enabled"),
+        help_text=_("Specifies whether the feed is enabled for processing.")
     )
 
     def __str__(self):
