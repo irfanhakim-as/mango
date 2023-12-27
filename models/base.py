@@ -124,3 +124,86 @@ class ObjectItem(models.Model):
 
     def __unicode__(self):
         return str(self.pk)
+
+
+#====================BASE: OBJECT ACCOUNT====================#
+class ObjectAccount(models.Model):
+    class Meta:
+        abstract=True
+
+    uid = models.CharField(
+        blank=False,
+        null=False,
+        unique=True,
+        max_length=255,
+        verbose_name=_("UID"),
+        help_text=_("Unique Identifier of the account.")
+    )
+
+    access_token = models.CharField(
+        blank=False,
+        null=False,
+        max_length=255,
+        verbose_name=_("Access token"),
+        help_text=_("Secure token required to authenticate with the Mastodon instance's API.")
+    )
+
+    api_base_url = models.CharField(
+        blank=False,
+        null=False,
+        max_length=255,
+        verbose_name=_("API endpoint"),
+        help_text=_("API endpoint or URL for the Mastodon instance.")
+    )
+
+    is_bot = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        verbose_name=_("Is bot"),
+        help_text=_("Specifies whether the account should be marked as a bot.")
+    )
+
+    is_discoverable = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        verbose_name=_("Is discoverable"),
+        help_text=_("Specifies whether the account should appear in the user directory.")
+    )
+
+    display_name = models.CharField(
+        blank=True,
+        null=True,
+        max_length=255,
+        verbose_name=_("Display name"),
+        help_text=_("The account's display name.")
+    )
+
+    fields = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name=_("Fields"),
+        help_text=_("Name-value pairs of information to be displayed in the profile.")
+    )
+
+    is_locked = models.BooleanField(
+        blank=False,
+        null=False,
+        default=False,
+        verbose_name=_("Is locked"),
+        help_text=_("Specifies whether the account needs to manually approve follow requests.")
+    )
+
+    note = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_("Item title"),
+        help_text=_("The bio or description of the account.")
+    )
+
+    def __str__(self):
+        return str(self.pk)
+
+    def __unicode__(self):
+        return str(self.pk)
