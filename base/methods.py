@@ -1,4 +1,5 @@
 import emoji
+import json
 import logging
 import re
 import urllib.request
@@ -93,6 +94,37 @@ def escape_md(text):
         log_message = message("LOG_EXCEPT", exception=e, verbose=verbose_warning, object=text)
         logger.warning(log_message)
     return text
+
+
+#====================UTILS: GET JSON DICTS====================#
+def get_json_dicts(json_file, **kwargs):
+    key = kwargs.get("key")
+    with open(json_file, "r") as f:
+        json_dict = json.load(f)
+        if not key:
+            return json_dict
+        return json_dict.get(key) if json_dict.get(key) else list()
+
+
+#====================UTILS: GET KEY VALUES====================#
+def get_key_values(**kwargs):
+    json_file = kwargs.get("json_file")
+    key = kwargs.get("key")
+    settings_dict = kwargs.get("settings_dict")
+    if json_file:
+        settings_dict = get_json_dicts(json_file, key=key)
+    # cast empty strings to None
+    return [sanitise_value(d.get(key)) for d in settings_dict if key in d]
+
+
+#====================UTILS: FILTER JSON DICTS====================#
+def filter_json_dicts(dict_list, **kwargs):
+    filtered_results = []
+    for item in dict_list:
+        matches_query = all(item.get(key) == value for key, value in kwargs.items())
+        if matches_query:
+            filtered_results.append(item)
+    return filtered_results
 
 
 #====================UTILS: SANITISE STRING====================#
