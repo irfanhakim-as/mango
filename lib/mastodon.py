@@ -6,9 +6,9 @@ logger = logging.getLogger("base")
 
 
 #====================SETTINGS: GETATTR====================#
-ACCESS_TOKEN = getattr(settings, "ACCESS_TOKEN")
-API_BASE_URL = getattr(settings, "API_BASE_URL")
-BOT_ID = getattr(settings, "BOT_ID")
+# ACCESS_TOKEN = getattr(settings, "ACCESS_TOKEN")
+# API_BASE_URL = getattr(settings, "API_BASE_URL")
+# BOT_ID = getattr(settings, "BOT_ID")
 DEFAULT_VISIBILITY = getattr(settings, "DEFAULT_VISIBILITY")
 
 
@@ -36,8 +36,8 @@ def clean_visibility(visibility, **kwargs):
 
 #====================MASTODON: SEND POST====================#
 def send_post(content, **kwargs):
-    access_token = kwargs.get("access_token", ACCESS_TOKEN)
-    api_base_url = kwargs.get("api_base_url", API_BASE_URL)
+    access_token = kwargs.get("access_token")
+    api_base_url = kwargs.get("api_base_url")
     post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     visibility = kwargs.get("visibility")
@@ -71,7 +71,7 @@ def send_post(content, **kwargs):
 
 #====================MASTODON: CHECK MASTODON HEALTH====================#
 def check_mastodon_health(**kwargs):
-    bot_id = kwargs.get("bot_id", BOT_ID)
+    bot_id = kwargs.get("bot_id")
     visibility = "private"
     content = message("MASTODON_TEST", visibility=visibility, name=bot_id)
     try:
@@ -87,8 +87,8 @@ def check_mastodon_health(**kwargs):
 
 #====================MASTODON: UPDATE ACCOUNT====================#
 def update_account(**kwargs):
-    access_token = kwargs.get("access_token", ACCESS_TOKEN)
-    api_base_url = kwargs.get("api_base_url", API_BASE_URL)
+    access_token = kwargs.get("access_token")
+    api_base_url = kwargs.get("api_base_url")
     bot = kwargs.get("bot")
     discoverable = kwargs.get("discoverable")
     display_name = kwargs.get("display_name")
