@@ -1,7 +1,10 @@
 import logging
 from mastodon import Mastodon
 from django.conf import settings
-from base.methods import message
+from base.methods import (
+    get_active_accounts,
+    message,
+)
 logger = logging.getLogger("base")
 
 
@@ -71,18 +74,33 @@ def send_post(content, **kwargs):
 
 #====================MASTODON: CHECK MASTODON HEALTH====================#
 def check_mastodon_health(**kwargs):
-    bot_id = kwargs.get("bot_id")
+    account_objects = kwargs.get("account_objects", get_active_accounts())
     visibility = "private"
-    content = message("MASTODON_TEST", visibility=visibility, name=bot_id)
-    try:
-        # send test post
-        send_post(content=content, visibility=visibility)
-    except Exception as e:
-        log_error = message("LOG_EXCEPT", exception=e, verbose="Test post failed to be sent", object=content)
-        logger.error(log_error)
-    else:
-        log_message = message("LOG_EVENT", event="Test post has been sent")
+
+    if not account_objects:
+        log_message = message("LOG_EVENT", event="No active account objects were found")
         logger.info(log_message)
+        return
+
+    for account in account_objects:
+        access_token = getattr(account, "access_token")
+        api_base_url = getattr(account, "api_base_url")
+        uid = getattr(account, "uid")
+        content = message("MASTODON_TEST", visibility=visibility, name=uid)
+        try:
+            # send test post
+            send_post(
+                content,
+                access_token=access_token,
+                api_base_url=api_base_url,
+                visibility=visibility
+            )
+        except Exception as e:
+            log_error = message("LOG_EXCEPT", exception=e, verbose="Test post failed to be sent", object=content)
+            logger.error(log_error)
+        else:
+            log_message = message("LOG_EVENT", event="Test post has been sent")
+            logger.info(log_message)
 
 
 #====================MASTODON: UPDATE ACCOUNT====================#
