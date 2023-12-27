@@ -31,6 +31,18 @@ def is_debug():
     return DEBUG is True
 
 
+#====================BASE: GET ACTIVE ACCOUNTS====================#
+def get_active_accounts():
+    AccountModel = get_account_model()
+    return AccountModel.objects.filter(is_enabled=True)
+
+
+#====================BASE: GET ACTIVE FEEDS====================#
+def get_active_feeds():
+    FeedModel = get_feed_model()
+    return FeedModel.objects.filter(is_enabled=True)
+
+
 #====================MODELS: GET POST MODEL====================#
 def get_post_model():
     # return the Post model that is active in this project
