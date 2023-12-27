@@ -207,3 +207,32 @@ class ObjectAccount(models.Model):
 
     def __unicode__(self):
         return str(self.pk)
+
+
+#=====================BASE: OBJECT FEED====================#
+class ObjectFeed(models.Model):
+    class Meta:
+        abstract=True
+
+    uid = models.CharField(
+        blank=False,
+        null=False,
+        unique=True,
+        max_length=255,
+        verbose_name=_("UID"),
+        help_text=_("Unique Identifier of the feed object.")
+    )
+
+    endpoint = models.CharField(
+        blank=False,
+        null=False,
+        max_length=255,
+        verbose_name=_("Endpoint"),
+        help_text=_("The endpoint or URL of the feed.")
+    )
+
+    def __str__(self):
+        return str(self.pk)
+
+    def __unicode__(self):
+        return str(self.pk)
