@@ -13,6 +13,8 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
 
 COPY root/*.py /${APP}/
 
+COPY data/*.json data/
+
 COPY models/*.py ${APP}/models/
 
 COPY settings/*.py ${APP}/conf/
