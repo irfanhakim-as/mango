@@ -86,9 +86,12 @@ def get_values_list(field, **kwargs):
 #====================MODELS: GET VALUES====================#
 def get_values(*fields, **kwargs) -> list:
     model = kwargs.get("model")
+    query = kwargs.get("query")
     queryset = kwargs.get("queryset")
     if model and not queryset:
         queryset = model.objects.all()
+    if query and queryset is not None:
+        queryset = queryset.filter(**query)
     if queryset is None or not fields:
         return []
     return list(queryset.values(*fields))
