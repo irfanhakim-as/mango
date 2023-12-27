@@ -83,6 +83,17 @@ def get_values_list(field, **kwargs):
         return list(queryset.values_list(field, flat=True).distinct())
 
 
+#====================MODELS: GET VALUES====================#
+def get_values(*fields, **kwargs) -> list:
+    model = kwargs.get("model")
+    queryset = kwargs.get("queryset")
+    if model and not queryset:
+        queryset = model.objects.all()
+    if queryset is None or not fields:
+        return []
+    return list(queryset.values(*fields))
+
+
 #====================MODELS: DICTS TO MODELS====================#
 def dicts_to_models(dicts, model_object, **kwargs):
     object_id = kwargs.get("object_id", "uid")
