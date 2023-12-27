@@ -101,6 +101,12 @@ def sanitise_string(text):
     return re.sub(r"[^a-zA-Z0-9]", "", text)
 
 
+#====================UTILS: SANITISE VALUE====================#
+def sanitise_value(v):
+    # cast empty strings to None
+    return v if str(v).strip() != "" else None
+
+
 #====================UTILS: COUNT EMOJI====================#
 def count_emoji(text):
     return emoji.emoji_count(text)
