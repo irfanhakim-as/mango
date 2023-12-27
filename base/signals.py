@@ -32,11 +32,11 @@ def update_accounts(sender, instance, created, **kwargs):
     params = dict(
         access_token = getattr(instance, "access_token"),
         api_base_url = getattr(instance, "api_base_url"),
-        is_bot = getattr(instance, "bot"),
-        is_discoverable = getattr(instance, "discoverable"),
+        bot = getattr(instance, "is_bot"),
+        discoverable = getattr(instance, "is_discoverable"),
         display_name = getattr(instance, "display_name"),
         fields = getattr(instance, "fields"),
-        is_locked = getattr(instance, "locked"),
+        locked = getattr(instance, "is_locked"),
         note = getattr(instance, "note"),
     )
     # update mastodon account
