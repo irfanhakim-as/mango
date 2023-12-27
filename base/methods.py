@@ -1,6 +1,7 @@
 import emoji
 import json
 import logging
+import os
 import re
 import urllib.request
 from datetime import datetime
@@ -23,6 +24,7 @@ DEBUG = getattr(settings, "DEBUG")
 ACCOUNT_MODEL = getattr(settings, "ACCOUNT_MODEL")
 FEED_MODEL = getattr(settings, "FEED_MODEL")
 POST_MODEL = getattr(settings, "POST_MODEL")
+SYNC_CONFIG = getattr(settings, "SYNC_CONFIG", dict())
 TIME_ZONE = getattr(settings, "TIME_ZONE")
 
 
@@ -41,6 +43,26 @@ def get_active_accounts():
 def get_active_feeds():
     FeedModel = get_feed_model()
     return FeedModel.objects.filter(is_enabled=True)
+
+
+#====================BASE: SYNC DATA====================#
+def sync_data(sync_dict=SYNC_CONFIG):
+    for k, v in sync_dict.items():
+        model = v.get("model")
+        data = v.get("data")
+        if not (model and data):
+            verbose_warning = 'Sync dictionary was improperly configured. Each key must be a valid JSON dictionary key and its value must be a dictionary with "model" and "data" keys.'
+            message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=k)
+            logger.warning(log_message)
+            continue
+        model_object = get_model(model)
+        if os.path.isfile(data):
+            data_dicts = get_json_dicts(data, key=k)
+            dicts_to_models(data_dicts, model_object, object_id="uid")
+        else:
+            verbose_warning = 'Data file "%s" does not exist' % data
+            log_message = message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=data)
+            logger.warning(log_message)
 
 
 #====================MODELS: GET MODEL====================#
