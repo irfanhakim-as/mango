@@ -19,6 +19,7 @@ logger = logging.getLogger("base")
 
 #====================SETTINGS: GETATTR====================#
 DEBUG = getattr(settings, "DEBUG")
+FEED_MODEL = getattr(settings, "FEED_MODEL")
 POST_MODEL = getattr(settings, "POST_MODEL")
 TIME_ZONE = getattr(settings, "TIME_ZONE")
 
@@ -38,6 +39,19 @@ def get_post_model():
     except LookupError:
         raise ImproperlyConfigured(
             "POST_MODEL refers to model '%s' that has not been installed" % POST_MODEL
+        )
+
+
+#====================MODELS: GET FEED MODEL====================#
+def get_feed_model():
+    # return the Feed model that is active in this project
+    try:
+        return django_apps.get_model(FEED_MODEL, require_ready=False)
+    except ValueError:
+        raise ImproperlyConfigured("FEED_MODEL must be of the form 'app_label.model_name'")
+    except LookupError:
+        raise ImproperlyConfigured(
+            "FEED_MODEL refers to model '%s' that has not been installed" % FEED_MODEL
         )
 
 
