@@ -19,6 +19,7 @@ logger = logging.getLogger("base")
 
 #====================SETTINGS: GETATTR====================#
 DEBUG = getattr(settings, "DEBUG")
+ACCOUNT_MODEL = getattr(settings, "ACCOUNT_MODEL")
 FEED_MODEL = getattr(settings, "FEED_MODEL")
 POST_MODEL = getattr(settings, "POST_MODEL")
 TIME_ZONE = getattr(settings, "TIME_ZONE")
@@ -52,6 +53,19 @@ def get_feed_model():
     except LookupError:
         raise ImproperlyConfigured(
             "FEED_MODEL refers to model '%s' that has not been installed" % FEED_MODEL
+        )
+
+
+#====================MODELS: GET ACCOUNT MODEL====================#
+def get_account_model():
+    # return the Account model that is active in this project
+    try:
+        return django_apps.get_model(ACCOUNT_MODEL, require_ready=False)
+    except ValueError:
+        raise ImproperlyConfigured("ACCOUNT_MODEL must be of the form 'app_label.model_name'")
+    except LookupError:
+        raise ImproperlyConfigured(
+            "ACCOUNT_MODEL refers to model '%s' that has not been installed" % ACCOUNT_MODEL
         )
 
 
