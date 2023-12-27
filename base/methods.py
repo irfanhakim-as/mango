@@ -57,30 +57,22 @@ def get_model(model_name, **kwargs):
         )
 
 
+#====================MODELS: GET POST MODEL====================#
+def get_post_model():
+    # return the Post model that is active in this project
+    get_model(POST_MODEL, model_variable="POST_MODEL")
+
+
 #====================MODELS: GET FEED MODEL====================#
 def get_feed_model():
     # return the Feed model that is active in this project
-    try:
-        return django_apps.get_model(FEED_MODEL, require_ready=False)
-    except ValueError:
-        raise ImproperlyConfigured("FEED_MODEL must be of the form 'app_label.model_name'")
-    except LookupError:
-        raise ImproperlyConfigured(
-            "FEED_MODEL refers to model '%s' that has not been installed" % FEED_MODEL
-        )
+    get_model(FEED_MODEL, model_variable="FEED_MODEL")
 
 
 #====================MODELS: GET ACCOUNT MODEL====================#
 def get_account_model():
     # return the Account model that is active in this project
-    try:
-        return django_apps.get_model(ACCOUNT_MODEL, require_ready=False)
-    except ValueError:
-        raise ImproperlyConfigured("ACCOUNT_MODEL must be of the form 'app_label.model_name'")
-    except LookupError:
-        raise ImproperlyConfigured(
-            "ACCOUNT_MODEL refers to model '%s' that has not been installed" % ACCOUNT_MODEL
-        )
+    get_model(ACCOUNT_MODEL, model_variable="ACCOUNT_MODEL")
 
 
 #====================MODELS: GET VALUES LIST====================#
