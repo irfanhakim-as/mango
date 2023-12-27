@@ -2,14 +2,14 @@ import logging
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from base.methods import (
-    get_active_accounts,
+    get_account_model,
     get_post_model,
     message,
 )
 from lib.mastodon import update_account
 from lib.scheduler import schedule_post
 logger = logging.getLogger("base")
-AccountModel = get_active_accounts()
+AccountModel = get_account_model()
 PostModel = get_post_model()
 
 
