@@ -7,6 +7,7 @@ from base.settings import *
 
 COMPULSORY_SETTINGS.extend([
     "ORGANIC_POSTS",
+    "ACCOUNT_MODEL",
     "FEED_MODEL",
     "POST_MODEL",
     "SCHEDULER_TIMEZONE",
@@ -20,6 +21,7 @@ COMPULSORY_SETTINGS.extend([
     "CELERY_TIMEZONE"
 ])
 ORGANIC_POSTS = os.getenv("ORGANIC_POSTS", False) == "true"
+ACCOUNT_MODEL = os.getenv("ACCOUNT_MODEL", "base.MastodonAccount")
 FEED_MODEL = os.getenv("FEED_MODEL", "base.FeedObject")
 POST_MODEL = os.getenv("POST_MODEL", "base.PostItem")
 SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
