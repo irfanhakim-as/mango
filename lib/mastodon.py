@@ -131,4 +131,8 @@ def update_account(**kwargs):
     )
 
     # update mastodon account
-    return mastodon.account_update_credentials(**params)
+    account = mastodon.account_update_credentials(**params)
+    if account:
+        log_message = message("LOG_EVENT", event='Mastodon account "%s" has been updated' % account.get("username"))
+        logger.info(log_message)
+    return account
