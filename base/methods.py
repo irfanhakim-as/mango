@@ -83,6 +83,35 @@ def get_values_list(field, **kwargs):
         return list(queryset.values_list(field, flat=True).distinct())
 
 
+#====================MODELS: DICTS TO MODELS====================#
+def dicts_to_models(dicts, model_object, **kwargs):
+    object_id = kwargs.get("object_id", "uid")
+    # dicts = get_json_dicts(json_file, key=key)
+    for d in dicts:
+        update = False
+        uid = d.get(object_id)
+        if not object_id:
+            continue
+        identifier = {object_id : uid}
+        # check if object already exists
+        obj, created = model_object.objects.get_or_create(**identifier)
+        # update values if different
+        for k, v in d.items():
+            # skip uid update
+            if k == "uid":
+                continue
+            # update value if field exists in object and its value is different from json value
+            if hasattr(obj, k) and getattr(obj, k) != sanitise_value(v):
+                log_message = message("LOG_EVENT", event='Updating %s object "%s.%s" from "%s" to "%s"' % (model_object.__name__, obj.pk, k, getattr(obj, k), sanitise_value(v)))
+                logger.info(log_message)
+                setattr(obj, k, sanitise_value(v))
+                update = True
+        if update:
+            obj.save()
+            log_message = message("LOG_EVENT", event='%s object "%s" has been updated' % (model_object.__name__, obj.pk))
+            logger.info(log_message)
+
+
 #====================UTILS: ESCAPE MARKDOWN====================#
 def escape_md(text):
     try:
