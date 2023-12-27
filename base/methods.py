@@ -43,16 +43,17 @@ def get_active_feeds():
     return FeedModel.objects.filter(is_enabled=True)
 
 
-#====================MODELS: GET POST MODEL====================#
-def get_post_model():
-    # return the Post model that is active in this project
+#====================MODELS: GET MODEL====================#
+def get_model(model_name, **kwargs):
+    model_variable = kwargs.get("model_variable", "MODEL")
+    # return the model object
     try:
-        return django_apps.get_model(POST_MODEL, require_ready=False)
+        return django_apps.get_model(model_name, require_ready=False)
     except ValueError:
-        raise ImproperlyConfigured("POST_MODEL must be of the form 'app_label.model_name'")
+        raise ImproperlyConfigured("%s must be of the form 'app_label.model_name'" % model_variable)
     except LookupError:
         raise ImproperlyConfigured(
-            "POST_MODEL refers to model '%s' that has not been installed" % POST_MODEL
+            "%s refers to model '%s' that has not been installed" % (model_variable, model_name)
         )
 
 
