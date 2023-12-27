@@ -9,9 +9,9 @@ COMPULSORY_SETTINGS.extend([
     "ORGANIC_POSTS",
     "POST_MODEL",
     "SCHEDULER_TIMEZONE",
-    "ACCESS_TOKEN",
-    "API_BASE_URL",
-    "BOT_ID",
+    # "ACCESS_TOKEN",
+    # "API_BASE_URL",
+    # "BOT_ID",
     "DEFAULT_VISIBILITY",
     "POST_LIMIT",
     "CELERY_BROKER_URL",
@@ -27,9 +27,9 @@ SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
 # Mastodon Settings
 ##################################################################
 
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "/base/base/mastodon.secret")
-API_BASE_URL = os.getenv("API_BASE_URL")
-BOT_ID = os.getenv("BOT_ID")
+# ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "/base/base/mastodon.secret")
+# API_BASE_URL = os.getenv("API_BASE_URL")
+# BOT_ID = os.getenv("BOT_ID")
 DEFAULT_VISIBILITY = os.getenv("DEFAULT_VISIBILITY", "public")
 POST_LIMIT = int(os.getenv("POST_LIMIT", "0"))
 
