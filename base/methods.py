@@ -131,7 +131,7 @@ def dicts_to_models(dicts, model_object, **kwargs):
     for d in dicts:
         update = False
         uid = d.get(object_id)
-        if not object_id:
+        if not uid:
             continue
         identifier = {object_id : uid}
         # check if object already exists
