@@ -127,7 +127,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                         post_object.subject.post_id = list()
                     post_object.subject.post_id.append(pid)
                     post_object.subject.save(update_fields=["post_id"])
-                log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, post_object.name))
+                log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, pid))
                 logger.info(log_message)
                 # delete post schedule object if it has been sent on current account
                 if isinstance(post_object.subject.post_id, list) and pid in post_object.subject.post_id:
