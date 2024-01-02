@@ -82,19 +82,19 @@ def get_model(model_name, **kwargs):
 #====================MODELS: GET POST MODEL====================#
 def get_post_model():
     # return the Post model that is active in this project
-    get_model(POST_MODEL, model_variable="POST_MODEL")
+    return get_model(POST_MODEL, model_variable="POST_MODEL")
 
 
 #====================MODELS: GET FEED MODEL====================#
 def get_feed_model():
     # return the Feed model that is active in this project
-    get_model(FEED_MODEL, model_variable="FEED_MODEL")
+    return get_model(FEED_MODEL, model_variable="FEED_MODEL")
 
 
 #====================MODELS: GET ACCOUNT MODEL====================#
 def get_account_model():
     # return the Account model that is active in this project
-    get_model(ACCOUNT_MODEL, model_variable="ACCOUNT_MODEL")
+    return get_model(ACCOUNT_MODEL, model_variable="ACCOUNT_MODEL")
 
 
 #====================MODELS: GET VALUES LIST====================#
