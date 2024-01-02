@@ -59,11 +59,9 @@ class ObjectItem(models.Model):
     class Meta:
         abstract=True
 
-    post_id = models.CharField(
+    post_id = models.JSONField(
         blank=True,
         null=True,
-        unique=True,
-        max_length=255,
         verbose_name=_("Post ID"),
         help_text=_("ID of the published Mastodon post.")
     )
