@@ -111,11 +111,12 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                     visibility=post_object.visibility,
                 )
             except Exception as e:
-                log_error = message("LOG_EXCEPT", exception=e, verbose='Post "%s" (%s) has failed to be sent' % (post_object, post_object.name), object=post_object)
+                verbose_error = 'Post "%s" (%s) has failed to be sent' % (post_object, uid)
+                log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=post_object)
                 logger.error(log_error)
             else:
                 if not post_id:
-                    verbose_error = 'Post "%s" (%s) has not successfully returned an ID' % (post_object, post_object.name)
+                    verbose_error = 'Post "%s" (%s) has not successfully returned an ID' % (post_object, uid)
                     log_error = message("LOG_EXCEPT", exception=None, verbose=verbose_error, object=post_object)
                     logger.error(log_error)
                     return
