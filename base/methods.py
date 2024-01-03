@@ -52,7 +52,7 @@ def sync_data(sync_dict=SYNC_CONFIG):
         data = v.get("data")
         if not (model and data):
             verbose_warning = 'Sync dictionary was improperly configured. Each key must be a valid JSON dictionary key and its value must be a dictionary with "model" and "data" keys.'
-            message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=k)
+            log_message = message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=k)
             logger.warning(log_message)
             continue
         model_object = get_model(model)
