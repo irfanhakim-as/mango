@@ -8,6 +8,7 @@ from base.methods import (
     get_active_accounts,
     is_debug,
     message,
+    string_list,
 )
 from lib.mastodon import send_post
 logger = logging.getLogger("base")
@@ -69,6 +70,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         return
 
     for post_object in post_objects:
+        delete = True
         # prepare post title, tags, and link
         post_title = emojize(post_object.subject.title)
         post_tags = emojize(" " + " ".join(["#" + i for i in post_object.subject.tags]) if post_object.subject.tags else "")
@@ -119,6 +121,8 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                     verbose_error = 'Post "%s" (%s) has not successfully returned an ID' % (post_object, uid)
                     log_error = message("LOG_EXCEPT", exception=None, verbose=verbose_error, object=post_object)
                     logger.error(log_error)
+                    # cancel mark for deletion since post has not been sent on current account
+                    delete = False
                     return
                 pid = "%s_%s" % (uid, post_id)
                 # update subject object post_id if new or non-format conforming post
@@ -129,6 +133,11 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                     post_object.subject.save(update_fields=["post_id"])
                 log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, pid))
                 logger.info(log_message)
-                # delete post schedule object if it has been sent on current account
-                if isinstance(post_object.subject.post_id, list) and pid in post_object.subject.post_id:
-                    post_object.delete()
+                # cancel mark for deletion if post has not been sent on an account
+                if not pid in post_object.subject.post_id:
+                    delete = False
+        # delete post schedule object if it has been sent successfully on all accounts
+        if delete:
+            log_message = message("LOG_EVENT", event='Deleting Post Schedule "%s" which has been sent successfully to "%s"' % (post_object, string_list(post_object.subject.post_id)))
+            logger.info(log_message)
+            post_object.delete()
