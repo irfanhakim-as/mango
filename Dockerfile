@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim:0.1.0-stable-r1
+FROM ghcr.io/irfanhakim-as/dim:0.1.1-minor-r2
 
 ENV APP="base"
 
