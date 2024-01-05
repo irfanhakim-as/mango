@@ -9,10 +9,10 @@
             "is_enabled": "",
             "display_name": "",
             "fields": [
-                {
-                    "name": "",
-                    "value": ""
-                }
+                [
+                    "",
+                    ""
+                ]
             ],
             "is_locked": "",
             "note": ""
