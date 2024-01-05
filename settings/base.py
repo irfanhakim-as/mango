@@ -10,6 +10,7 @@ COMPULSORY_SETTINGS.extend([
     "ACCOUNT_MODEL",
     "FEED_MODEL",
     "POST_MODEL",
+    "SCHEDULE_MODEL",
     "SCHEDULER_TIMEZONE",
     # "ACCESS_TOKEN",
     # "API_BASE_URL",
@@ -28,6 +29,7 @@ ORGANIC_POSTS = os.getenv("ORGANIC_POSTS", False) == "true"
 ACCOUNT_MODEL = os.getenv("ACCOUNT_MODEL", "base.MastodonAccount")
 FEED_MODEL = os.getenv("FEED_MODEL", "base.FeedObject")
 POST_MODEL = os.getenv("POST_MODEL", "base.PostItem")
+SCHEDULE_MODEL = os.getenv("SCHEDULE_MODEL", "base.PostSchedule")
 SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
 
 
