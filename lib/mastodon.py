@@ -96,10 +96,11 @@ def check_mastodon_health(**kwargs):
                 visibility=visibility
             )
         except Exception as e:
-            log_error = message("LOG_EXCEPT", exception=e, verbose="Test post failed to be sent", object=content)
+            verbose_error = 'Test post to "%s" has failed to be sent' % uid
+            log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=content)
             logger.error(log_error)
         else:
-            log_message = message("LOG_EVENT", event="Test post has been sent")
+            log_message = message("LOG_EVENT", event='Test post to "%s" has been sent' % uid)
             logger.info(log_message)
 
 
