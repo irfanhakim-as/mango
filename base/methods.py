@@ -24,6 +24,7 @@ DEBUG = getattr(settings, "DEBUG")
 ACCOUNT_MODEL = getattr(settings, "ACCOUNT_MODEL")
 FEED_MODEL = getattr(settings, "FEED_MODEL")
 POST_MODEL = getattr(settings, "POST_MODEL")
+SCHEDULE_MODEL = getattr(settings, "SCHEDULE_MODEL")
 SYNC_CONFIG = getattr(settings, "SYNC_CONFIG", dict())
 TIME_ZONE = getattr(settings, "TIME_ZONE")
 
@@ -83,6 +84,12 @@ def get_model(model_name, **kwargs):
 def get_post_model():
     # return the Post model that is active in this project
     return get_model(POST_MODEL, model_variable="POST_MODEL")
+
+
+#====================MODELS: GET SCHEDULE MODEL====================#
+def get_schedule_model():
+    # return the Schedule model that is active in this project
+    return get_model(SCHEDULE_MODEL, model_variable="SCHEDULE_MODEL")
 
 
 #====================MODELS: GET FEED MODEL====================#
