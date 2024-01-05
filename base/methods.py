@@ -145,8 +145,8 @@ def dicts_to_models(dicts, model_object, **kwargs):
         obj, created = model_object.objects.get_or_create(**identifier)
         # update values if different
         for k, v in d.items():
-            # skip uid update
-            if k == "uid":
+            # skip object_id update
+            if k == object_id:
                 continue
             # update value if field exists in object and its value is different from json value
             if hasattr(obj, k) and getattr(obj, k) != sanitise_value(v):
