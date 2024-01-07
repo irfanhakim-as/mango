@@ -9,6 +9,7 @@ from dateutil import (
     parser,
     tz,
 )
+from urllib.parse import urlparse
 from django.apps import apps as django_apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -253,6 +254,11 @@ def icon(**kwargs):
         return ""
     else:
         return icon + " " if spacer else icon
+
+
+#====================UTILS: GET DOMAIN====================#
+def get_domain(url):
+    return urlparse(url).netloc if url else None
 
 
 #====================UTILS: READ URL====================#
