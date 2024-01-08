@@ -12,7 +12,10 @@ from dateutil import (
 from urllib.parse import urlparse
 from django.apps import apps as django_apps
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import (
+    ImproperlyConfigured,
+    ValidationError,
+)
 from lib.messages import (
     ICONS,
     MESSAGES,
@@ -134,27 +137,39 @@ def get_values(*fields, **kwargs) -> list:
 
 #====================MODELS: DICTS TO MODELS====================#
 def dicts_to_models(dicts, model_object, **kwargs):
-    object_id = kwargs.get("object_id", "uid")
-    # dicts = get_json_dicts(json_file, key=key)
+    object_id = kwargs.get("object_id", ("uid",))
+    # iterate through list of dicts to sync
     for d in dicts:
+        identifier = dict()
+        keys_exist = True
         update = False
-        uid = d.get(object_id)
-        if not uid:
-            continue
-        identifier = {object_id : uid}
-        # check if object already exists
-        obj, created = model_object.objects.get_or_create(**identifier)
-        # update values if different
-        for k, v in d.items():
-            # skip object_id update
-            if k == object_id:
+        # ensure unique identifiers have values
+        for i in object_id:
+            if not d.get(i):
+                keys_exist = False
+                break
+            identifier[i] = d.get(i)
+        # proceed if all attributes in object_id are set
+        if keys_exist:
+            try:
+                # create or get object if already exists
+                obj, created = model_object.objects.get_or_create(**identifier)
+            except ValidationError as e:
+                verbose_error = 'Failed to create or get %s object with identifier "%s"' % (model_object.__name__, identifier)
+                log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=d)
+                logger.error(log_error)
                 continue
-            # update value if field exists in object and its value is different from json value
-            if hasattr(obj, k) and getattr(obj, k) != sanitise_value(v):
-                log_message = message("LOG_EVENT", event='Updating %s object "%s.%s" from "%s" to "%s"' % (model_object.__name__, obj.pk, k, getattr(obj, k), sanitise_value(v)))
-                logger.info(log_message)
-                setattr(obj, k, sanitise_value(v))
-                update = True
+            # iterate through dict field and value pairs
+            for k, v in d.items():
+                # skip updating any object_id fields
+                if k in object_id:
+                    continue
+                # update value if field exists in object and its value is different from json value
+                if hasattr(obj, k) and getattr(obj, k) != sanitise_value(v):
+                    log_message = message("LOG_EVENT", event='Updating %s object "%s.%s" from "%s" to "%s"' % (model_object.__name__, obj.pk, k, getattr(obj, k), sanitise_value(v)))
+                    logger.info(log_message)
+                    setattr(obj, k, sanitise_value(v))
+                    update = True
         if update:
             obj.save()
             log_message = message("LOG_EVENT", event='%s object "%s" has been updated' % (model_object.__name__, obj.pk))
