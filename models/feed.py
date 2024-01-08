@@ -5,7 +5,7 @@ from base.models.base import ObjectFeed
 
 #=====================FEED: OBJECT====================#
 class FeedObject(ObjectFeed):
-    class Meta:
+    class Meta(ObjectFeed.Meta):
         verbose_name = "Feed object"
         verbose_name_plural = "feed objects"
 

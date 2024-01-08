@@ -7,7 +7,7 @@ PostModel = get_post_model()
 
 #====================SCHEDULE: POST====================#
 class PostSchedule(ObjectSchedule):
-    class Meta:
+    class Meta(ObjectSchedule.Meta):
         verbose_name = "Post Schedule"
         verbose_name_plural = "post schedules"
 
