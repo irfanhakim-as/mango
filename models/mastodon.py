@@ -4,6 +4,6 @@ from base.models.base import ObjectAccount
 
 #=====================MASTODON: ACCOUNT====================#
 class MastodonAccount(ObjectAccount):
-    class Meta:
+    class Meta(ObjectAccount.Meta):
         verbose_name = "Account"
         verbose_name_plural = "accounts"

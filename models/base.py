@@ -128,11 +128,11 @@ class ObjectItem(models.Model):
 class ObjectAccount(models.Model):
     class Meta:
         abstract=True
+        unique_together = (("api_base_url", "uid"))
 
     uid = models.CharField(
         blank=False,
         null=False,
-        unique=True,
         max_length=255,
         verbose_name=_("UID"),
         help_text=_("Unique Identifier of the account.")
