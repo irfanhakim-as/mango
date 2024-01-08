@@ -44,8 +44,9 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
     organic = kwargs.get("organic", ORGANIC_POSTS)
 
     if not account_objects:
-        log_message = message("LOG_EVENT", event="No active account objects were found")
-        logger.info(log_message)
+        if is_debug():
+            log_message = message("LOG_EVENT", event="No active account objects were found")
+            logger.info(log_message)
         return
 
     # set count of posts to be sent
