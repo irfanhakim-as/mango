@@ -55,6 +55,7 @@ def sync_data(sync_dict=SYNC_CONFIG):
     for k, v in sync_dict.items():
         model = v.get("model")
         data = v.get("data")
+        object_id = v.get("object_id")
         if not (model and data):
             verbose_warning = 'Sync dictionary was improperly configured. Each key must be a valid JSON dictionary key and its value must be a dictionary with "model" and "data" keys.'
             log_message = message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=k)
@@ -63,7 +64,7 @@ def sync_data(sync_dict=SYNC_CONFIG):
         model_object = get_model(model)
         if os.path.isfile(data):
             data_dicts = get_json_dicts(data, key=k)
-            dicts_to_models(data_dicts, model_object, object_id="uid")
+            dicts_to_models(data_dicts, model_object, object_id=object_id)
         else:
             verbose_warning = 'Data file "%s" does not exist' % data
             log_message = message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=data)

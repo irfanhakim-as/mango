@@ -64,9 +64,11 @@ SYNC_CONFIG = {
     "accounts" : {
         "model" : ACCOUNT_MODEL,
         "data" : ACCOUNTS_DATA_FILE,
+        "object_id" : ("api_base_url", "uid"),
     },
     "feeds" : {
         "model" : FEED_MODEL,
         "data" : FEEDS_DATA_FILE,
+        "object_id" : ("uid",),
     },
 }
