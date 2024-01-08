@@ -141,6 +141,7 @@ class ObjectAccount(models.Model):
     access_token = models.CharField(
         blank=False,
         null=False,
+        unique=True,
         max_length=255,
         verbose_name=_("Access token"),
         help_text=_("Secure token required to authenticate with the Mastodon instance's API.")
