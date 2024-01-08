@@ -6,6 +6,7 @@ from base.methods import (
     count_emoji,
     emojize,
     get_active_accounts,
+    get_domain,
     is_debug,
     message,
     string_list,
@@ -100,9 +101,12 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         for account in account_objects:
             access_token = getattr(account, "access_token")
             api_base_url = getattr(account, "api_base_url")
+            api_domain = get_domain(api_base_url)
             uid = getattr(account, "uid")
+            # format a unique account id
+            account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
             # get post_id specific to account if it is an existing and format conforming post
-            account_pid = [pid.split("_")[-1] for pid in post_object.subject.post_id if pid.split("_")[0] == uid] if post_object.subject.post_id and isinstance(post_object.subject.post_id, list) else []
+            account_pid = [pid.split("_")[-1] for pid in post_object.subject.post_id if pid.split("_")[0] == account_id] if post_object.subject.post_id and isinstance(post_object.subject.post_id, list) else []
             account_pid = account_pid[0] if account_pid else None
             try:
                 post_id = send_post(
@@ -125,7 +129,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                     # cancel mark for deletion since post has not been sent on current account
                     delete = False
                     return
-                pid = "%s_%s" % (uid, post_id)
+                pid = "%s_%s" % (account_id, post_id)
                 # update subject object post_id if new or non-format conforming post
                 if not account_pid:
                     if not isinstance(post_object.subject.post_id, list):
