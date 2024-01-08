@@ -1,8 +1,10 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from base.methods import (
     demojize,
+    get_domain,
     has_emoji,
 )
 
@@ -208,6 +210,39 @@ class ObjectAccount(models.Model):
         verbose_name=_("Item title"),
         help_text=_("The bio or description of the account.")
     )
+
+    # normalise API endpoint by getting only the domain
+    def clean_api_base_url(self):
+        return get_domain(self.api_base_url)
+
+    # validate uniqueness of uid per api_base_url
+    def validate_unique(self, exclude=None):
+        # make exclude iterable if it is not
+        exclude = exclude if exclude is not None else []
+        exclude = exclude if isinstance(exclude, (list, tuple)) else [exclude]
+        # check uniqueness of uid and api_base_url after normalisation as a pair
+        qs = self.__class__.objects.filter(uid=self.uid, api_base_url__contains=self.clean_api_base_url())
+        if exclude:
+            qs = qs.exclude(pk__in=exclude)
+        if qs.exists():
+            raise ValidationError(
+                code="unique_together",
+                message=_("An account with the same UID already exists for the same API endpoint."),
+                params={
+                    "api_base_url" : self.api_base_url,
+                    "uid" : self.uid,
+                }
+            )
+        # run parent validate_unique method
+        super().validate_unique(exclude=exclude)
+
+    def save(self, *args, **kwargs):
+        # validate uniqueness of uid per api_base_url
+        self.validate_unique(exclude=self.pk)
+        # save only the domain of the API endpoint
+        # self.api_base_url = self.clean_api_base_url()
+        # run parent save method
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return str(self.pk)
