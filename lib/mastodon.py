@@ -3,6 +3,7 @@ from mastodon import Mastodon
 from django.conf import settings
 from base.methods import (
     get_active_accounts,
+    get_domain,
     message,
 )
 logger = logging.getLogger("base")
@@ -85,7 +86,10 @@ def check_mastodon_health(**kwargs):
     for account in account_objects:
         access_token = getattr(account, "access_token")
         api_base_url = getattr(account, "api_base_url")
+        api_domain = get_domain(api_base_url)
         uid = getattr(account, "uid")
+        # format a unique account id
+        account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
         content = message("MASTODON_TEST", visibility=visibility, name=uid)
         try:
             # send test post
@@ -96,11 +100,11 @@ def check_mastodon_health(**kwargs):
                 visibility=visibility
             )
         except Exception as e:
-            verbose_error = 'Test post to "%s" has failed to be sent' % uid
+            verbose_error = 'Test post to "%s" has failed to be sent' % account_id
             log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=content)
             logger.error(log_error)
         else:
-            log_message = message("LOG_EVENT", event='Test post to "%s" has been sent' % uid)
+            log_message = message("LOG_EVENT", event='Test post to "%s" has been sent' % account_id)
             logger.info(log_message)
 
 
@@ -134,6 +138,9 @@ def update_account(**kwargs):
     # update mastodon account
     account = mastodon.account_update_credentials(**params)
     if account:
-        log_message = message("LOG_EVENT", event='Mastodon account "%s" has been updated' % account.get("username"))
+        url = account.get("url")
+        username = account.get("username")
+        account_id = "%s@%s" % (username, get_domain(url)) if url and username else None
+        log_message = message("LOG_EVENT", event='Mastodon account "%s" has been updated' % account_id)
         logger.info(log_message)
     return account
