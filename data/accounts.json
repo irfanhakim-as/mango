@@ -1,0 +1,21 @@
+{
+    "accounts": [
+        {
+            "uid": "",
+            "access_token": "",
+            "api_base_url": "",
+            "is_bot": "",
+            "is_discoverable": "",
+            "is_enabled": "",
+            "display_name": "",
+            "fields": [
+                [
+                    "",
+                    ""
+                ]
+            ],
+            "is_locked": "",
+            "note": ""
+        }
+    ]
+}

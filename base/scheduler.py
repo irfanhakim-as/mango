@@ -5,8 +5,11 @@ from django.conf import settings
 from base.methods import (
     count_emoji,
     emojize,
+    get_active_accounts,
+    get_domain,
     is_debug,
     message,
+    string_list,
 )
 from lib.mastodon import send_post
 logger = logging.getLogger("base")
@@ -37,8 +40,15 @@ def schedule_post(schedule_model, subject_object, **kwargs):
 
 #====================BASE: POST SCHEDULER====================#
 def post_scheduler(pending_objects, updating_objects, **kwargs):
+    account_objects = kwargs.get("account_objects", get_active_accounts())
     limit = kwargs.get("limit", POST_LIMIT)
     organic = kwargs.get("organic", ORGANIC_POSTS)
+
+    if not account_objects:
+        if is_debug():
+            log_message = message("LOG_EVENT", event="No active account objects were found")
+            logger.info(log_message)
+        return
 
     # set count of posts to be sent
     limit = limit if limit > 0 else 100
@@ -62,6 +72,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         return
 
     for post_object in post_objects:
+        delete = True
         # prepare post title, tags, and link
         post_title = emojize(post_object.subject.title)
         post_tags = emojize(" " + " ".join(["#" + i for i in post_object.subject.tags]) if post_object.subject.tags else "")
@@ -86,23 +97,52 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
             tags=post_tags,
             link=post_link
         )
-        try:
-            post_id = send_post(
-                content,
-                post_id=post_object.subject.post_id,
-                receiver=post_object.receiver,
-                visibility=post_object.visibility,
-            )
-        except Exception as e:
-            log_error = message("LOG_EXCEPT", exception=e, verbose='Post "%s" (%s) has failed to be sent' % (post_object, post_object.name), object=post_object)
-            logger.error(log_error)
-        else:
-            # update subject object post_id
-            post_object.subject.post_id = post_id
-            post_object.subject.save(update_fields=["post_id"])
-            log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, post_object.name))
-            logger.info(log_message)
 
-        # delete post schedule object if it has been sent
-        if post_object.subject.post_id:
+        for account in account_objects:
+            access_token = getattr(account, "access_token")
+            api_base_url = getattr(account, "api_base_url")
+            api_domain = get_domain(api_base_url)
+            uid = getattr(account, "uid")
+            # format a unique account id
+            account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
+            # get post_id specific to account if it is an existing and format conforming post
+            account_pid = [pid.split("_")[-1] for pid in post_object.subject.post_id if pid.split("_")[0] == account_id] if post_object.subject.post_id and isinstance(post_object.subject.post_id, list) else []
+            account_pid = account_pid[0] if account_pid else None
+            try:
+                post_id = send_post(
+                    content,
+                    access_token=access_token,
+                    api_base_url=api_base_url,
+                    post_id=account_pid,
+                    receiver=post_object.receiver,
+                    visibility=post_object.visibility,
+                )
+            except Exception as e:
+                verbose_error = 'Post "%s" (%s) has failed to be sent' % (post_object, account_id)
+                log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=post_object)
+                logger.error(log_error)
+            else:
+                if not post_id:
+                    verbose_error = 'Post "%s" (%s) has not successfully returned an ID' % (post_object, account_id)
+                    log_error = message("LOG_EXCEPT", exception=None, verbose=verbose_error, object=post_object)
+                    logger.error(log_error)
+                    # cancel mark for deletion since post has not been sent on current account
+                    delete = False
+                    return
+                pid = "%s_%s" % (account_id, post_id)
+                # update subject object post_id if new or non-format conforming post
+                if not account_pid:
+                    if not isinstance(post_object.subject.post_id, list):
+                        post_object.subject.post_id = list()
+                    post_object.subject.post_id.append(pid)
+                    post_object.subject.save(update_fields=["post_id"])
+                log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, pid))
+                logger.info(log_message)
+                # cancel mark for deletion if post has not been sent on an account
+                if not pid in post_object.subject.post_id:
+                    delete = False
+        # delete post schedule object if it has been sent successfully on all accounts
+        if delete:
+            log_message = message("LOG_EVENT", event='Deleting Post Schedule "%s" which has been sent successfully to "%s"' % (post_object, string_list(post_object.subject.post_id)))
+            logger.info(log_message)
             post_object.delete()

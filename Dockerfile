@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim:0.1.0-stable-r1
+FROM ghcr.io/irfanhakim-as/dim:0.1.1-stable-r1
 
 ENV APP="base"
 
@@ -12,6 +12,8 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
 
 COPY root/*.py /${APP}/
+
+COPY data/*.json data/
 
 COPY models/*.py ${APP}/models/
 

@@ -1,14 +1,18 @@
 import logging
 from mastodon import Mastodon
 from django.conf import settings
-from base.methods import message
+from base.methods import (
+    get_active_accounts,
+    get_domain,
+    message,
+)
 logger = logging.getLogger("base")
 
 
 #====================SETTINGS: GETATTR====================#
-ACCESS_TOKEN = getattr(settings, "ACCESS_TOKEN")
-API_BASE_URL = getattr(settings, "API_BASE_URL")
-BOT_ID = getattr(settings, "BOT_ID")
+# ACCESS_TOKEN = getattr(settings, "ACCESS_TOKEN")
+# API_BASE_URL = getattr(settings, "API_BASE_URL")
+# BOT_ID = getattr(settings, "BOT_ID")
 DEFAULT_VISIBILITY = getattr(settings, "DEFAULT_VISIBILITY")
 
 
@@ -36,8 +40,8 @@ def clean_visibility(visibility, **kwargs):
 
 #====================MASTODON: SEND POST====================#
 def send_post(content, **kwargs):
-    access_token = kwargs.get("access_token", ACCESS_TOKEN)
-    api_base_url = kwargs.get("api_base_url", API_BASE_URL)
+    access_token = kwargs.get("access_token")
+    api_base_url = kwargs.get("api_base_url")
     post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     visibility = kwargs.get("visibility")
@@ -71,24 +75,43 @@ def send_post(content, **kwargs):
 
 #====================MASTODON: CHECK MASTODON HEALTH====================#
 def check_mastodon_health(**kwargs):
-    bot_id = kwargs.get("bot_id", BOT_ID)
+    account_objects = kwargs.get("account_objects", get_active_accounts())
     visibility = "private"
-    content = message("MASTODON_TEST", visibility=visibility, name=bot_id)
-    try:
-        # send test post
-        send_post(content=content, visibility=visibility)
-    except Exception as e:
-        log_error = message("LOG_EXCEPT", exception=e, verbose="Test post failed to be sent", object=content)
-        logger.error(log_error)
-    else:
-        log_message = message("LOG_EVENT", event="Test post has been sent")
+
+    if not account_objects:
+        log_message = message("LOG_EVENT", event="No active account objects were found")
         logger.info(log_message)
+        return
+
+    for account in account_objects:
+        access_token = getattr(account, "access_token")
+        api_base_url = getattr(account, "api_base_url")
+        api_domain = get_domain(api_base_url)
+        uid = getattr(account, "uid")
+        # format a unique account id
+        account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
+        content = message("MASTODON_TEST", visibility=visibility, name=uid)
+        try:
+            # send test post
+            send_post(
+                content,
+                access_token=access_token,
+                api_base_url=api_base_url,
+                visibility=visibility
+            )
+        except Exception as e:
+            verbose_error = 'Test post to "%s" has failed to be sent' % account_id
+            log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=content)
+            logger.error(log_error)
+        else:
+            log_message = message("LOG_EVENT", event='Test post to "%s" has been sent' % account_id)
+            logger.info(log_message)
 
 
 #====================MASTODON: UPDATE ACCOUNT====================#
 def update_account(**kwargs):
-    access_token = kwargs.get("access_token", ACCESS_TOKEN)
-    api_base_url = kwargs.get("api_base_url", API_BASE_URL)
+    access_token = kwargs.get("access_token")
+    api_base_url = kwargs.get("api_base_url")
     bot = kwargs.get("bot")
     discoverable = kwargs.get("discoverable")
     display_name = kwargs.get("display_name")
@@ -113,4 +136,11 @@ def update_account(**kwargs):
     )
 
     # update mastodon account
-    return mastodon.account_update_credentials(**params)
+    account = mastodon.account_update_credentials(**params)
+    if account:
+        url = account.get("url")
+        username = account.get("username")
+        account_id = "%s@%s" % (username, get_domain(url)) if url and username else None
+        log_message = message("LOG_EVENT", event='Mastodon account "%s" has been updated' % account_id)
+        logger.info(log_message)
+    return account
