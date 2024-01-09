@@ -130,7 +130,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                     verbose_error = 'Post "%s" (%s) has not successfully returned an ID' % (post_object, account_id)
                     log_error = message("LOG_EXCEPT", exception=None, verbose=verbose_error, object=post_object)
                     logger.error(log_error)
-                    return
+                    continue
                 pid = "%s_%s" % (account_id, post_id)
                 # update subject object post_id if new or non-format conforming post
                 if not account_pid:
