@@ -145,6 +145,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                     delete = False
         # delete post schedule object if it has been sent successfully on all accounts
         if delete:
-            log_message = message("LOG_EVENT", event='Deleting Post Schedule "%s" which has been sent successfully to "%s"' % (post_object, string_list(post_object.subject.post_id)))
-            logger.info(log_message)
+            verbose_event = 'Post Schedule "%s" which has been sent successfully to "%s" has been deleted' % (post_object, string_list(post_object.subject.post_id))
             post_object.delete()
+            log_message = message("LOG_EVENT", event=verbose_event)
+            logger.info(log_message)
