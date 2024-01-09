@@ -118,6 +118,8 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                     visibility=post_object.visibility,
                 )
             except Exception as e:
+                # cancel mark for deletion due to error
+                delete = False
                 verbose_error = 'Post "%s" (%s) has failed to be sent' % (post_object, account_id)
                 log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=post_object)
                 logger.error(log_error)
