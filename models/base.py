@@ -31,7 +31,7 @@ class ObjectScheduleMeta(models.base.ModelBase):
 #====================BASE: OBJECT SCHEDULE====================#
 class ObjectSchedule(models.Model, metaclass=ObjectScheduleMeta):
     class Meta:
-        abstract=True
+        abstract = True
 
     name = models.CharField(
         blank=True,
@@ -59,7 +59,7 @@ class ObjectSchedule(models.Model, metaclass=ObjectScheduleMeta):
 #====================BASE: OBJECT ITEM====================#
 class ObjectItem(models.Model):
     class Meta:
-        abstract=True
+        abstract = True
 
     post_id = models.JSONField(
         blank=True,
@@ -129,7 +129,7 @@ class ObjectItem(models.Model):
 #====================BASE: OBJECT ACCOUNT====================#
 class ObjectAccount(models.Model):
     class Meta:
-        abstract=True
+        abstract = True
         unique_together = (("api_base_url", "uid"))
 
     uid = models.CharField(
@@ -254,7 +254,7 @@ class ObjectAccount(models.Model):
 #=====================BASE: OBJECT FEED====================#
 class ObjectFeed(models.Model):
     class Meta:
-        abstract=True
+        abstract = True
 
     uid = models.CharField(
         blank=False,
