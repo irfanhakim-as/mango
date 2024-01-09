@@ -19,6 +19,7 @@ logger = logging.getLogger("base")
 DB_TYPE = getattr(settings, "DB_TYPE")
 ORGANIC_POSTS = getattr(settings, "ORGANIC_POSTS")
 POST_LIMIT = getattr(settings, "POST_LIMIT")
+RETRY_POST = getattr(settings, "RETRY_POST")
 
 
 #====================BASE: SCHEDULE POST====================#
@@ -43,6 +44,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
     account_objects = kwargs.get("account_objects", get_active_accounts())
     limit = kwargs.get("limit", POST_LIMIT)
     organic = kwargs.get("organic", ORGANIC_POSTS)
+    retry_post = kwargs.get("retry_post", RETRY_POST)
 
     if not account_objects:
         if is_debug():
@@ -143,9 +145,12 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                 # cancel mark for deletion if post has not been sent on an account
                 if not pid in post_object.subject.post_id:
                     delete = False
-        # delete post schedule object if it has been sent successfully on all accounts
-        if delete:
-            verbose_event = 'Post Schedule "%s" which has been sent successfully to "%s" has been deleted' % (post_object, string_list(post_object.subject.post_id))
+        # delete post schedule object if it has been sent successfully on all accounts or if configured to not retry
+        if delete or not retry_post:
+            if delete:
+                verbose_event = 'Post Schedule "%s" which has been sent successfully to "%s" has been deleted' % (post_object, string_list(post_object.subject.post_id))
+            else:
+                verbose_event = 'Post Schedule "%s" has been deleted' % post_object
             post_object.delete()
             log_message = message("LOG_EVENT", event=verbose_event)
             logger.info(log_message)
