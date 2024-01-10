@@ -291,7 +291,8 @@ def remove_dict_keys(dictvar, keys):
 
 #====================UTILS: LIST AS STRING====================#
 def string_list(l):
-    return str(l)[1:-1]
+    return ", ".join(map(str, l)) if isinstance(l, (list, tuple)) and l else None
+    # return str(l)[1:-1]
 
 
 #====================UTILS: UNIQUE LIST====================#
