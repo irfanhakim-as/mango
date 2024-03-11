@@ -9,6 +9,7 @@ from base.methods import (
     get_domain,
     is_debug,
     message,
+    sanitise_string,
     string_list,
 )
 from lib.mastodon import send_post
@@ -77,7 +78,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         delete = True
         # prepare post title, tags, and link
         post_title = emojize(post_object.subject.title)
-        post_tags = emojize(" " + " ".join(["#" + i for i in post_object.subject.tags]) if post_object.subject.tags else "")
+        post_tags = emojize(" " + " ".join(["#" + sanitise_string(i) for i in post_object.subject.tags]) if post_object.subject.tags else "")
         post_link = emojize("\n\n%s" % post_object.subject.link if post_object.subject.link else "")
 
         # ensure title + tags + link does not exceed the character limit. link counts as 23 characters + 2 characters (newlines). emoji counts as 2 characters.
