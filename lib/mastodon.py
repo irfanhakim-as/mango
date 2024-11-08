@@ -73,8 +73,8 @@ def send_post(content, **kwargs):
     return toot.get("id")
 
 
-#====================MASTODON: CHECK MASTODON HEALTH====================#
-def check_mastodon_health(**kwargs):
+#====================MASTODON: CHECK HEALTH====================#
+def check_health(**kwargs):
     account_objects = kwargs.get("account_objects", get_active_accounts())
     visibility = "private"
 
