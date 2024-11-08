@@ -95,7 +95,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
 
         # prepare content
         content = message(
-            "MASTODON_POST",
+            "FEED_POST",
             title=post_title,
             tags=post_tags,
             link=post_link
