@@ -17,7 +17,7 @@ DEFAULT_VISIBILITY = getattr(settings, "DEFAULT_VISIBILITY")
 
 
 #====================MASTODON: INSTANTIATE====================#
-def instantiate_mastodon(access_token, home_instance):
+def instantiate(access_token, home_instance):
     if not (access_token and home_instance):
         log_message = message("LOG_EVENT", event="Mastodon not configured to be instantiated")
         logger.warning(log_message)
@@ -47,7 +47,7 @@ def send_post(content, **kwargs):
     visibility = kwargs.get("visibility")
 
     # set up mastodon
-    mastodon = instantiate_mastodon(access_token, api_base_url)
+    mastodon = instantiate(access_token, api_base_url)
 
     if not mastodon:
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
@@ -120,7 +120,7 @@ def update_account(**kwargs):
     note = kwargs.get("note")
 
     # set up mastodon
-    mastodon = instantiate_mastodon(access_token, api_base_url)
+    mastodon = instantiate(access_token, api_base_url)
     if not mastodon:
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
         logger.warning(log_message)
