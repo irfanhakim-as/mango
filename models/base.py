@@ -65,7 +65,7 @@ class ObjectItem(models.Model):
         blank=True,
         null=True,
         verbose_name=_("Post ID"),
-        help_text=_("ID of the published Mastodon post.")
+        help_text=_("ID of the published object post.")
     )
 
     item_id = models.CharField(
@@ -146,7 +146,7 @@ class ObjectAccount(models.Model):
         unique=True,
         max_length=255,
         verbose_name=_("Access token"),
-        help_text=_("Secure token required to authenticate with the Mastodon instance's API.")
+        help_text=_("Secure token required to authenticate with the server instance's API.")
     )
 
     api_base_url = models.CharField(
@@ -154,7 +154,7 @@ class ObjectAccount(models.Model):
         null=False,
         max_length=255,
         verbose_name=_("API endpoint"),
-        help_text=_("API endpoint or URL for the Mastodon instance.")
+        help_text=_("API endpoint or URL for the server instance.")
     )
 
     is_bot = models.BooleanField(
