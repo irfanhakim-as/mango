@@ -83,6 +83,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
 
         # ensure title + tags + link does not exceed the character limit. link counts as 23 characters + 2 characters (newlines). emoji counts as 2 characters.
         char_limit = 500
+        link_limit = 25
         title_count = len(post_title)
         tags_count = len(post_tags)
         link_count = 25 if post_link else 0
