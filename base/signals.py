@@ -7,7 +7,7 @@ from base.methods import (
     get_schedule_model,
     message,
 )
-from lib.mastodon import update_account
+from lib.mastodon import update_account as update_mastodon_account
 from lib.scheduler import schedule_post
 logger = logging.getLogger("base")
 AccountModel = get_account_model()
@@ -44,7 +44,7 @@ def update_accounts(sender, instance, created, **kwargs):
         note = getattr(instance, "note"),
     )
     # update mastodon account
-    account = update_account(**params)
+    account = update_mastodon_account(**params)
     if not account:
         verbose_warning = "Mastodon account failed to be updated"
         log_message = message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=instance)
