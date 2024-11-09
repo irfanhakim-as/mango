@@ -41,7 +41,7 @@ def clean_visibility(visibility, **kwargs):
 
 #====================MASTODON: PREPARE POST====================#
 def prepare_post(title, tags, link):
-    # ensure title + tags + link does not exceed the character limit. link counts as 23 characters + 2 characters (newlines). emoji counts as 2 characters.
+    # set character limits
     char_limit = 500
     link_limit = 25
     title_count = len(title)
