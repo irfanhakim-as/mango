@@ -86,7 +86,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         link_limit = 25
         title_count = len(post_title)
         tags_count = len(post_tags)
-        link_count = 25 if post_link else 0
+        link_count = 0 if not post_link else min(link_count, link_limit)
         emoji_count = count_emoji(post_title + post_tags + post_link)
         # prioritise removing tags, then limiting title to accommodate link
         if title_count + tags_count + link_count + emoji_count > char_limit:
