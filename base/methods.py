@@ -242,7 +242,7 @@ def count_emoji(text):
 
 #====================UTILS: HAS EMOJI====================#
 def has_emoji(text):
-    return count_emoji(text) > 0
+    return count_emoji(text)[0] > 0
 
 
 #====================UTILS: EMOJIZE====================#
