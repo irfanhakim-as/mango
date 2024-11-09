@@ -11,9 +11,6 @@ logger = logging.getLogger("base")
 
 
 #====================SETTINGS: GETATTR====================#
-# ACCESS_TOKEN = getattr(settings, "ACCESS_TOKEN")
-# API_BASE_URL = getattr(settings, "API_BASE_URL")
-# BOT_ID = getattr(settings, "BOT_ID")
 DEFAULT_VISIBILITY = getattr(settings, "DEFAULT_VISIBILITY")
 
 
