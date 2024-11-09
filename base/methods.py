@@ -235,7 +235,9 @@ def sanitise_value(v):
 
 #====================UTILS: COUNT EMOJI====================#
 def count_emoji(text):
-    return emoji.emoji_count(text)
+    tokens = list(emoji.analyze(text))
+    # return count, length of emoji
+    return len(tokens), sum([len(t.value.emoji) for t in tokens])
 
 
 #====================UTILS: HAS EMOJI====================#
