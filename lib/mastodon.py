@@ -43,7 +43,7 @@ def clean_visibility(visibility, **kwargs):
 def prepare_post(title, tags, link):
     # set character limits
     char_limit = 500
-    link_limit = 25
+    link_limit = sum((23, 2)) # additional 2 for newlines
     title_count = len(title)
     tags_count = len(tags)
     link_count = 0 if not link else (link_limit if len(link) > link_limit else len(link))
