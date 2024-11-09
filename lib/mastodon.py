@@ -50,7 +50,7 @@ def prepare_post(title, tags, link):
     link_count = 0 if not link else (link_limit if len(link) > link_limit else len(link))
     emoji_count, emoji_length = count_emoji(title + tags + link)
     # prioritise removing tags, then limiting title to accommodate link
-    if title_count + tags_count + link_count + emoji_count > char_limit:
+    if sum((title_count, tags_count, link_count, emoji_count - emoji_length)) > char_limit:
         tags = ""
         emoji_count = count_emoji(title + tags + link)
         title = title[:char_limit-link_count-emoji_count]
