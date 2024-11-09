@@ -3,7 +3,6 @@ import math
 import random
 from django.conf import settings
 from base.methods import (
-    count_emoji,
     emojize,
     get_active_accounts,
     get_domain,
