@@ -140,6 +140,15 @@ class ObjectAccount(models.Model):
         help_text=_("Unique Identifier of the account.")
     )
 
+    host = models.CharField(
+        blank=False,
+        null=False,
+        default="mastodon",
+        max_length=255,
+        verbose_name=_("Host"),
+        help_text=_("The underlying host service of the server instance.")
+    )
+
     access_token = models.CharField(
         blank=False,
         null=False,
