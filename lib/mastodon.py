@@ -44,6 +44,7 @@ def prepare_post(title, tags, link):
     # set character limits
     char_limit = 500
     link_limit = sum((23, 2)) # additional 2 for newlines
+    # count characters
     title_count = len(title)
     tags_count = len(tags)
     link_count = 0 if not link else (link_limit if len(link) > link_limit else len(link))
