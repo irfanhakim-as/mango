@@ -11,7 +11,14 @@ from base.methods import (
     sanitise_string,
     string_list,
 )
-from lib.mastodon import send_post
+from lib.bluesky import (
+    prepare_post as prepare_bluesky_post,
+    send_post as send_bluesky_post,
+)
+from lib.mastodon import (
+    prepare_post as prepare_mastodon_post,
+    send_post as send_mastodon_post,
+)
 logger = logging.getLogger("base")
 
 
@@ -79,26 +86,37 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         post_title = emojize(post_object.subject.title)
         post_tags = emojize(" " + " ".join(["#" + sanitise_string(i) for i in post_object.subject.tags]) if post_object.subject.tags else "")
         post_link = emojize("\n\n%s" % post_object.subject.link if post_object.subject.link else "")
+        bluesky_post = prepare_bluesky_post(post_title, post_tags, post_link)
+        mastodon_post = prepare_mastodon_post(post_title, post_tags, post_link)
 
         for account in account_objects:
             access_token = getattr(account, "access_token")
             api_base_url = getattr(account, "api_base_url")
             api_domain = get_domain(api_base_url)
             uid = getattr(account, "uid")
+            host = getattr(account, "host")
             # format a unique account id
             account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
             # get post_id specific to account if it is an existing and format conforming post
             account_pid = [pid.split("_")[-1] for pid in post_object.subject.post_id if pid.split("_")[0] == account_id] if post_object.subject.post_id and isinstance(post_object.subject.post_id, list) else []
             account_pid = account_pid[0] if account_pid else None
             try:
-                post_id = send_post(
-                    content,
-                    access_token=access_token,
-                    api_base_url=api_base_url,
-                    post_id=account_pid,
-                    receiver=post_object.receiver,
-                    visibility=post_object.visibility,
-                )
+                if host and host.lower() == "bluesky":
+                    post_id = send_bluesky_post(
+                        bluesky_post,
+                        access_token=access_token,
+                        account_id=account_id,
+                        receiver=post_object.receiver,
+                    )
+                else:
+                    post_id = send_mastodon_post(
+                        mastodon_post,
+                        access_token=access_token,
+                        api_base_url=api_base_url,
+                        post_id=account_pid,
+                        receiver=post_object.receiver,
+                        visibility=post_object.visibility,
+                    )
             except Exception as e:
                 # cancel mark for deletion due to error
                 delete = False
