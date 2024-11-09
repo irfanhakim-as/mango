@@ -81,27 +81,6 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         post_tags = emojize(" " + " ".join(["#" + sanitise_string(i) for i in post_object.subject.tags]) if post_object.subject.tags else "")
         post_link = emojize("\n\n%s" % post_object.subject.link if post_object.subject.link else "")
 
-        # ensure title + tags + link does not exceed the character limit. link counts as 23 characters + 2 characters (newlines). emoji counts as 2 characters.
-        char_limit = 500
-        link_limit = 25
-        title_count = len(post_title)
-        tags_count = len(post_tags)
-        link_count = 0 if not post_link else (link_limit if len(post_link) > link_limit else len(post_link))
-        emoji_count = count_emoji(post_title + post_tags + post_link)
-        # prioritise removing tags, then limiting title to accommodate link
-        if title_count + tags_count + link_count + emoji_count > char_limit:
-            post_tags = ""
-            emoji_count = count_emoji(post_title + post_tags + post_link)
-            post_title = post_title[:char_limit-link_count-emoji_count]
-
-        # prepare content
-        content = message(
-            "FEED_POST",
-            title=post_title,
-            tags=post_tags,
-            link=post_link
-        )
-
         for account in account_objects:
             access_token = getattr(account, "access_token")
             api_base_url = getattr(account, "api_base_url")

@@ -2,6 +2,7 @@ import logging
 from mastodon import Mastodon
 from django.conf import settings
 from base.methods import (
+    count_emoji,
     get_active_accounts,
     get_domain,
     message,
@@ -36,6 +37,29 @@ def clean_visibility(visibility, **kwargs):
         return visibility.lower()
     else:
         return default_visibility.lower()
+
+
+#====================MASTODON: PREPARE POST====================#
+def prepare_post(title, tags, link):
+    # ensure title + tags + link does not exceed the character limit. link counts as 23 characters + 2 characters (newlines). emoji counts as 2 characters.
+    char_limit = 500
+    link_limit = 25
+    title_count = len(title)
+    tags_count = len(tags)
+    link_count = 0 if not link else (link_limit if len(link) > link_limit else len(link))
+    emoji_count = count_emoji(title + tags + link)
+    # prioritise removing tags, then limiting title to accommodate link
+    if title_count + tags_count + link_count + emoji_count > char_limit:
+        tags = ""
+        emoji_count = count_emoji(title + tags + link)
+        title = title[:char_limit-link_count-emoji_count]
+    # return post content
+    return message(
+        "FEED_POST",
+        title=title,
+        tags=tags,
+        link=link
+    )
 
 
 #====================MASTODON: SEND POST====================#
