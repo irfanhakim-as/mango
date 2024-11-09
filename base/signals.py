@@ -33,6 +33,10 @@ def schedule_posts(sender, instance, created, **kwargs):
 #====================MASTODON: UPDATE ACCOUNTS====================#
 @receiver(post_save, sender=AccountModel)
 def update_accounts(sender, instance, created, **kwargs):
+    host = getattr(instance, "host")
+    # NOTE: to be implemented for bluesky - reference: https://github.com/MarshalX/atproto/blob/main/examples/advanced_usage/update_profile.py
+    if host and host.lower() == "bluesky":
+        return
     params = dict(
         access_token = getattr(instance, "access_token"),
         api_base_url = getattr(instance, "api_base_url"),
