@@ -1,5 +1,8 @@
 import logging
-from atproto import Client
+from atproto import (
+    Client,
+    models as atproto_models,
+)
 # from django.conf import settings
 from base.methods import (
     count_emoji,
@@ -67,7 +70,7 @@ def prepare_post(title, tags, link):
 def send_post(content, **kwargs):
     access_token = kwargs.get("access_token")
     account_id = kwargs.get("account_id")
-    # post_id = kwargs.get("post_id")
+    post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     # visibility = kwargs.get("visibility")
 
@@ -88,8 +91,20 @@ def send_post(content, **kwargs):
     )
 
     # send bluesky post
-    # NOTE: post update not currently supported on bluesky
-    post = bluesky.send_post(text=content, **params)
+    # NOTE: post update not currently supported on bluesky - alternative implementation would be to quote instead
+    if not post_id:
+        post = bluesky.send_post(text=content, **params)
+    else:
+        post = bluesky.send_post(
+            text=content,
+            embed=atproto_models.app.bsky.embed.record.Main(
+                record=atproto_models.ComAtprotoRepoStrongRef.Main(
+                    uri=post_id.split(",")[0],
+                    cid=post_id.split(",")[1]
+                )
+            ),
+            **params
+        )
 
     # return post id
     return "%s,%s" % (getattr(post, "uri"), getattr(post, "cid"))
