@@ -87,12 +87,12 @@ def send_post(content, **kwargs):
 
     # send mastodon post
     if not post_id:
-        toot = mastodon.status_post(content, **params)
+        post = mastodon.status_post(content, **params)
     else:
-        toot = mastodon.status_update(post_id, status=content)
+        post = mastodon.status_update(post_id, status=content)
 
     # return post id
-    return toot.get("id")
+    return post.get("id")
 
 
 #====================MASTODON: CHECK HEALTH====================#
