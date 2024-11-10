@@ -92,7 +92,7 @@ def send_post(content, **kwargs):
     post = bluesky.send_post(text=content, **params)
 
     # return post id
-    return post.get("cid")
+    return "%s,%s" % (getattr(post, "uri"), getattr(post, "cid"))
 
 
 #====================BLUESKY: CHECK HEALTH====================#
