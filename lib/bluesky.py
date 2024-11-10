@@ -97,7 +97,7 @@ def send_post(content, **kwargs):
 
 #====================BLUESKY: CHECK HEALTH====================#
 def check_health(**kwargs):
-    account_objects = kwargs.get("account_objects", get_active_accounts())
+    account_objects = kwargs.get("account_objects", get_active_accounts(host="bluesky"))
     # visibility = "private"
 
     if not account_objects:
