@@ -4,6 +4,7 @@ from atproto import (
     models as atproto_models,
 )
 # from django.conf import settings
+from pathlib import Path
 from base.methods import (
     count_emoji,
     get_active_accounts,
@@ -27,7 +28,7 @@ def instantiate(access_token, account_id):
         client = Client()
         login = client.login(
             account_id,
-            access_token,
+            Path(access_token).read_text().strip(),
         )
         return client
 
