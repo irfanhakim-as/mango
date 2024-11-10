@@ -106,6 +106,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                         bluesky_post,
                         access_token=access_token,
                         account_id=account_id,
+                        post_id=account_pid,
                         receiver=post_object.receiver,
                     )
                 else:
