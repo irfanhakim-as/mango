@@ -39,15 +39,15 @@ def is_debug():
 
 
 #====================BASE: GET ACTIVE ACCOUNTS====================#
-def get_active_accounts():
+def get_active_accounts(**kwargs):
     AccountModel = get_account_model()
-    return AccountModel.objects.filter(is_enabled=True) if AccountModel else []
+    return AccountModel.objects.filter(is_enabled=True, **kwargs) if AccountModel else []
 
 
 #====================BASE: GET ACTIVE FEEDS====================#
-def get_active_feeds():
+def get_active_feeds(**kwargs):
     FeedModel = get_feed_model()
-    return FeedModel.objects.filter(is_enabled=True) if FeedModel else []
+    return FeedModel.objects.filter(is_enabled=True, **kwargs) if FeedModel else []
 
 
 #====================BASE: SYNC DATA====================#
