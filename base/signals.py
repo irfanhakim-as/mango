@@ -43,7 +43,7 @@ def update_accounts(sender, instance, created, **kwargs):
     # update account
     if host and host.lower() == "bluesky":
         params.update(dict(
-            account_id = "%s.%s" (getattr(instance, "uid"), get_domain(getattr(instance, "api_base_url"))),
+            account_id = "%s.%s" % (getattr(instance, "uid"), get_domain(getattr(instance, "api_base_url"))),
             description = getattr(instance, "note"),
         ))
         account = update_bluesky_account(**params)
