@@ -27,7 +27,7 @@ COMPULSORY_SETTINGS.extend([
     "SYNC_CONFIG",
 ])
 ORGANIC_POSTS = os.getenv("ORGANIC_POSTS", False) == "true"
-ACCOUNT_MODEL = os.getenv("ACCOUNT_MODEL", "base.MastodonAccount")
+ACCOUNT_MODEL = os.getenv("ACCOUNT_MODEL", "base.AccountObject")
 FEED_MODEL = os.getenv("FEED_MODEL", "base.FeedObject")
 POST_MODEL = os.getenv("POST_MODEL", "base.PostItem")
 SCHEDULE_MODEL = os.getenv("SCHEDULE_MODEL", "base.PostSchedule")
