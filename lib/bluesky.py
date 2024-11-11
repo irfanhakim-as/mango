@@ -147,39 +147,44 @@ def check_health(**kwargs):
 
 
 #====================BLUESKY: UPDATE ACCOUNT====================#
-# NOTE: to be implemented for bluesky - reference: https://github.com/MarshalX/atproto/blob/main/examples/advanced_usage/update_profile.py
-# def update_account(**kwargs):
-#     access_token = kwargs.get("access_token")
-#     api_base_url = kwargs.get("api_base_url")
-#     bot = kwargs.get("bot")
-#     discoverable = kwargs.get("discoverable")
-#     display_name = kwargs.get("display_name")
-#     fields = kwargs.get("fields")
-#     locked = kwargs.get("locked")
-#     note = kwargs.get("note")
+def update_account(**kwargs):
+    access_token = kwargs.get("access_token")
+    account_id = kwargs.get("account_id")
 
-#     # set up bluesky
-#     bluesky = instantiate(access_token, account_id)
-#     if not bluesky:
-#         log_message = message("LOG_EVENT", event="Bluesky has failed to be instantiated")
-#         logger.warning(log_message)
-#         return
+    # set up bluesky
+    bluesky = instantiate(access_token, account_id)
+    if not bluesky:
+        log_message = message("LOG_EVENT", event="Bluesky has failed to be instantiated")
+        logger.warning(log_message)
+        return
 
-#     params = dict(
-#         bot=bot,
-#         discoverable=discoverable,
-#         display_name=display_name,
-#         fields=fields,
-#         locked=locked,
-#         note=note,
-#     )
+    # get current profile
+    current_profile_record = bluesky.app.bsky.actor.profile.get(bluesky.me.did, "self")
+    current_profile = getattr(current_profile_record, "value", None)
 
-#     # update bluesky account
-#     account = mastodon.account_update_credentials(**params)
-#     if account:
-#         url = account.get("url")
-#         username = account.get("username")
-#         account_id = "%s@%s" % (username, get_domain(url)) if url and username else None
-#         log_message = message("LOG_EVENT", event='Mastodon account "%s" has been updated' % account_id)
-#         logger.info(log_message)
-#     return account
+    params = dict(
+        avatar=kwargs.get("avatar", getattr(current_profile, "avatar", None)), # not officially supported
+        banner=kwargs.get("banner", getattr(current_profile, "banner", None)), # not officially supported
+        created_at=kwargs.get("created_at", getattr(current_profile, "created_at", None)), # not officially supported
+        description=kwargs.get("description", getattr(current_profile, "description", None)),
+        display_name=kwargs.get("display_name", getattr(current_profile, "display_name", None)),
+        joined_via_starter_pack=kwargs.get("joined_via_starter_pack", getattr(current_profile, "joined_via_starter_pack", None)), # not officially supported
+        labels=kwargs.get("labels", getattr(current_profile, "labels", None)), # not officially supported
+        pinned_post=kwargs.get("pinned_post", getattr(current_profile, "pinned_post", None)), # not officially supported
+    )
+
+    # update bluesky account
+    account = bluesky.com.atproto.repo.put_record(
+        atproto_models.ComAtprotoRepoPutRecord.Data(
+            collection=atproto_models.ids.AppBskyActorProfile,
+            repo=bluesky.me.did,
+            rkey="self",
+            swap_record=getattr(current_profile_record, "cid", None),
+            record=atproto_models.AppBskyActorProfile.Record(**params),
+        )
+    )
+    if account:
+        account_id = bluesky.me.handle
+        log_message = message("LOG_EVENT", event='Bluesky account "%s" has been updated' % account_id)
+        logger.info(log_message)
+    return account

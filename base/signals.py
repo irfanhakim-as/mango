@@ -3,10 +3,12 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from base.methods import (
     get_account_model,
+    get_domain,
     get_post_model,
     get_schedule_model,
     message,
 )
+from lib.bluesky import update_account as update_bluesky_account
 from lib.mastodon import update_account as update_mastodon_account
 from lib.scheduler import schedule_post
 logger = logging.getLogger("base")
@@ -30,26 +32,32 @@ def schedule_posts(sender, instance, created, **kwargs):
         logger.info(log_message)
 
 
-#====================MASTODON: UPDATE ACCOUNTS====================#
+#====================ACCOUNT: UPDATE ACCOUNTS====================#
 @receiver(post_save, sender=AccountModel)
 def update_accounts(sender, instance, created, **kwargs):
     host = getattr(instance, "host")
-    # NOTE: to be implemented for bluesky - reference: https://github.com/MarshalX/atproto/blob/main/examples/advanced_usage/update_profile.py
-    if host and host.lower() == "bluesky":
-        return
     params = dict(
         access_token = getattr(instance, "access_token"),
-        api_base_url = getattr(instance, "api_base_url"),
-        bot = getattr(instance, "is_bot"),
-        discoverable = getattr(instance, "is_discoverable"),
         display_name = getattr(instance, "display_name"),
-        fields = getattr(instance, "fields"),
-        locked = getattr(instance, "is_locked"),
-        note = getattr(instance, "note"),
     )
-    # update mastodon account
-    account = update_mastodon_account(**params)
+    # update account
+    if host and host.lower() == "bluesky":
+        params.update(dict(
+            account_id = "%s.%s" (getattr(instance, "uid"), get_domain(getattr(instance, "api_base_url"))),
+            description = getattr(instance, "note"),
+        ))
+        account = update_bluesky_account(**params)
+    else:
+        params.update(dict(
+            api_base_url = getattr(instance, "api_base_url"),
+            bot = getattr(instance, "is_bot"),
+            discoverable = getattr(instance, "is_discoverable"),
+            fields = getattr(instance, "fields"),
+            locked = getattr(instance, "is_locked"),
+            note = getattr(instance, "note"),
+        ))
+        account = update_mastodon_account(**params)
     if not account:
-        verbose_warning = "Mastodon account failed to be updated"
+        verbose_warning = "Account failed to be updated"
         log_message = message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=instance)
         logger.warning(log_message)
