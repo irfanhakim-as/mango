@@ -96,7 +96,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
             uid = getattr(account, "uid")
             host = getattr(account, "host")
             # format a unique account id
-            account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
+            account_id = "%s%s%s" % (uid, "." if host and host.lower() == "bluesky" else "@", api_domain) if api_domain and uid else None
             # get post_id specific to account if it is an existing and format conforming post
             account_pid = [pid.split("_")[-1] for pid in post_object.subject.post_id if pid.split("_")[0] == account_id] if post_object.subject.post_id and isinstance(post_object.subject.post_id, list) else []
             account_pid = account_pid[0] if account_pid else None
