@@ -127,7 +127,7 @@ def check_health(**kwargs):
         api_domain = get_domain(api_base_url)
         uid = getattr(account, "uid")
         # format a unique account id
-        account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
+        account_id = "%s.%s" % (uid, api_domain) if api_domain and uid else None
         content = message("BLUESKY_TEST", id=account_id)
         try:
             # send test post
