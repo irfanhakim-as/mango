@@ -1,6 +1,6 @@
 APScheduler==3.10.1
 atproto==0.0.55
 celery==5.2.7
-emoji==2.2.0
+emoji==2.14.0
 Mastodon.py==1.8.0
 redis==4.4.0
