@@ -102,9 +102,9 @@ def build_rich_post(client, text):
 
 #====================BLUESKY: SEND POST====================#
 def send_post(content, **kwargs):
-    params = kwargs.get("params", {})
     access_token = kwargs.get("access_token")
     account_id = kwargs.get("account_id")
+    params = kwargs.get("params", {})
     post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     # visibility = kwargs.get("visibility")
