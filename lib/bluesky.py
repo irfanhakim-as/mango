@@ -188,3 +188,15 @@ def update_account(**kwargs):
         log_message = message("LOG_EVENT", event='Bluesky account "%s" has been updated' % account_id)
         logger.info(log_message)
     return account
+
+
+#====================BLUESKY: GET USER====================#
+def get_user(client, handle):
+    user = None
+    try:
+        user = client.get_profile(handle)
+    except Exception as e:
+        verbose_error = 'Failed to get user "%s" profile' % handle
+        log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=handle)
+        logger.error(log_error)
+    return user
