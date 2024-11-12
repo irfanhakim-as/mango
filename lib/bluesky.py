@@ -175,7 +175,7 @@ def send_post(content, **kwargs):
                 cid=post_id.split(",")[1]
             )
         )
-        params.update(embed=quote_embed)
+        params.update(embed=quote_embed) if not link_embed else params.update(embed=atproto_models.AppBskyEmbedRecordWithMedia.Main(record=quote_embed, media=link_embed))
     post = bluesky.send_post(text=content, **params)
 
     # return post id
