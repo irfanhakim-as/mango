@@ -120,6 +120,9 @@ def send_post(content, **kwargs):
         # if not visibility:
         #     visibility = "direct"
 
+    # make post rich
+    content = build_rich_post(bluesky, content)
+
     params = dict(
         # visibility=clean_visibility(visibility),
     )
