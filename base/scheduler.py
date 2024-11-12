@@ -142,7 +142,9 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                 log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, pid))
                 logger.info(log_message)
                 # cancel mark for deletion if post has not been sent on an account
-                if not pid in post_object.subject.post_id:
+                # NOTE: check for account_id instead as pid changes with every quote post for bluesky due to absence of real post updates
+                # if not pid in post_object.subject.post_id:
+                if not any(account_id in i for i in post_object.subject.post_id):
                     delete = False
         # delete post schedule object if it has been sent successfully on all accounts or if configured to not retry
         if delete or not retry_post:
