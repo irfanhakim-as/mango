@@ -161,7 +161,10 @@ def send_post(content, **kwargs):
         #     visibility = "direct"
 
     # make post rich
-    content = build_rich_post(bluesky, content)
+    content, link_embed = build_rich_post(bluesky, content)
+
+    # include link embed object if applicable
+    params.update(embed=link_embed) if link_embed else None
 
     # send bluesky post
     # NOTE: post update not currently supported on bluesky - alternative implementation would be to quote instead
