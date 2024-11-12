@@ -92,6 +92,7 @@ def prepare_post(title, tags, link):
 
 #====================BLUESKY: BUILD RICH POST====================#
 def build_rich_post(client, text):
+    link_embed = None
     rich_post = client_utils.TextBuilder()
     # define patterns
     hashtag_pattern = r"#\w+"
@@ -104,6 +105,23 @@ def build_rich_post(client, text):
         # build link
         if re.match(url_pattern, part):
             rich_post.link(part, part)
+            # skip creating link embed object if one exists
+            if link_embed:
+                continue
+            # get required metadata
+            link_metadata = get_content_md(part)
+            # create link embed object if sufficient metadata
+            if link_metadata and ((description := link_metadata.get("description")) and (title := link_metadata.get("title"))):
+                thumbnail_bin = getattr(requests.get(thumbnail), "content", None) if (thumbnail := link_metadata.get("thumbnail")) else None
+                params = dict(
+                    description=link_metadata.get("description"),
+                    thumb=client.upload_blob(data=thumbnail_bin).blob if thumbnail_bin else None,
+                    title=link_metadata.get("title"),
+                    uri=part,
+                )
+                link_embed = atproto_models.AppBskyEmbedExternal.Main(
+                    external=atproto_models.AppBskyEmbedExternal.External(**params)
+                )
         else:
             # split by spaces to handle individual words and hashtags - keep the spaces as separate elements
             words = re.split(r'(\s+)', part)
@@ -118,7 +136,7 @@ def build_rich_post(client, text):
                 # add regular text
                 else:
                     rich_post.text(word)
-    return rich_post
+    return rich_post, link_embed
 
 
 #====================BLUESKY: SEND POST====================#
