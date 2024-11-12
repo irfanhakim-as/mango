@@ -1,10 +1,12 @@
 import logging
 import re
+import requests
 from atproto import (
     Client,
     client_utils,
     models as atproto_models,
 )
+from bs4 import BeautifulSoup
 # from django.conf import settings
 from pathlib import Path
 from base.methods import (
@@ -18,6 +20,25 @@ logger = logging.getLogger("base")
 
 #====================SETTINGS: GETATTR====================#
 # DEFAULT_VISIBILITY = getattr(settings, "DEFAULT_VISIBILITY")
+
+
+#====================UTILS: GET CONTENT METADATA====================#
+def get_content_md(url):
+    # fetch the page content
+    response = requests.get(url)
+    if response.status_code != 200: return None
+    # parse the page content
+    soup = BeautifulSoup(response.content, "html.parser")
+    # extract metadata
+    description = soup.find("meta", property="og:description")
+    thumbnail = soup.find("meta", property="og:image")
+    title = soup.find("meta", property="og:title")
+    # return metadata
+    return dict(
+        description=description["content"] if description else None,
+        thumbnail=thumbnail["content"] if thumbnail else None,
+        title=title["content"] if title else None,
+    )
 
 
 #====================BLUESKY: INSTANTIATE====================#
