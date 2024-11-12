@@ -124,25 +124,17 @@ def send_post(content, **kwargs):
     # make post rich
     content = build_rich_post(bluesky, content)
 
-    params = dict(
-        # visibility=clean_visibility(visibility),
-    )
-
     # send bluesky post
     # NOTE: post update not currently supported on bluesky - alternative implementation would be to quote instead
-    if not post_id:
-        post = bluesky.send_post(text=content, **params)
-    else:
-        post = bluesky.send_post(
-            text=content,
-            embed=atproto_models.app.bsky.embed.record.Main(
-                record=atproto_models.ComAtprotoRepoStrongRef.Main(
-                    uri=post_id.split(",")[0],
-                    cid=post_id.split(",")[1]
-                )
-            ),
-            **params
+    if post_id:
+        quote_embed = atproto_models.app.bsky.embed.record.Main(
+            record=atproto_models.ComAtprotoRepoStrongRef.Main(
+                uri=post_id.split(",")[0],
+                cid=post_id.split(",")[1]
+            )
         )
+        params.update(embed=quote_embed)
+    post = bluesky.send_post(text=content, **params)
 
     # return post id
     return "%s,%s" % (getattr(post, "uri"), getattr(post, "cid"))
