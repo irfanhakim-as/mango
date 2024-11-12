@@ -1,6 +1,8 @@
 import logging
+import re
 from atproto import (
     Client,
+    client_utils,
     models as atproto_models,
 )
 # from django.conf import settings
@@ -65,6 +67,37 @@ def prepare_post(title, tags, link):
         tags=tags,
         link=link
     )
+
+
+#====================BLUESKY: BUILD RICH POST====================#
+def build_rich_post(client, text):
+    rich_post = client_utils.TextBuilder()
+    # define patterns
+    hashtag_pattern = r"#\w+"
+    mention_pattern = r"@\w+"
+    url_pattern = r"http[s]?://\S+"
+    # split the text using urls and keep the delimiters
+    parts = re.split("(%s)" % url_pattern, text)
+    # build rich post
+    for part in parts:
+        # build link
+        if re.match(url_pattern, part):
+            rich_post.link(part, part)
+        else:
+            # split by spaces to handle individual words and hashtags - keep the spaces as separate elements
+            words = re.split(r'(\s+)', part)
+            for word in words:
+                # build hashtag
+                if re.match(hashtag_pattern, word):
+                    rich_post.tag(word, word[1:])
+                # build mention if valid
+                elif re.match(mention_pattern, word):
+                    user_did = getattr(get_user(client, word[1:]), "did", None)
+                    rich_post.mention(word, user_did) if user_did else rich_post.text(word)
+                # add regular text
+                else:
+                    rich_post.text(word)
+    return rich_post
 
 
 #====================BLUESKY: SEND POST====================#
