@@ -149,7 +149,7 @@ def send_post(content, **kwargs):
     # visibility = kwargs.get("visibility")
 
     # set up bluesky
-    if not bluesky or (bluesky := instantiate(access_token, account_id)):
+    if not (bluesky or (bluesky := instantiate(access_token, account_id))):
         log_message = message("LOG_EVENT", event="Bluesky has failed to be instantiated")
         logger.warning(log_message)
         return
