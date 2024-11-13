@@ -47,13 +47,12 @@ def instantiate(access_token, account_id):
         log_message = message("LOG_EVENT", event="Bluesky not configured to be instantiated")
         logger.warning(log_message)
         return
-    else:
-        client = Client()
-        login = client.login(
-            account_id,
-            Path(access_token).read_text().strip(),
-        )
-        return client
+    client = Client()
+    login = client.login(
+        account_id,
+        Path(access_token).read_text().strip(),
+    )
+    return client
 
 
 #====================BLUESKY: CLEAN VISIBILITY====================#
