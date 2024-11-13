@@ -232,11 +232,22 @@ def update_account(**kwargs):
     current_profile_record = bluesky.app.bsky.actor.profile.get(bluesky.me.did, "self")
     current_profile = getattr(current_profile_record, "value", None)
 
+    # NOTE: this feature is experimental - build fields into description
+    description = kwargs.get("description", getattr(current_profile, "description", None))
+    if fields := kwargs.get("fields"):
+        if description:
+            description += "\n\n"
+        else:
+            description = ""
+        for field in fields:
+            description += "%s: %s\n" % (field[0], field[1])
+        description = description.rstrip("\n")
+
     params = dict(
         avatar=kwargs.get("avatar", getattr(current_profile, "avatar", None)), # not officially supported
         banner=kwargs.get("banner", getattr(current_profile, "banner", None)), # not officially supported
         created_at=kwargs.get("created_at", getattr(current_profile, "created_at", None)), # not officially supported
-        description=kwargs.get("description", getattr(current_profile, "description", None)),
+        description=description,
         display_name=kwargs.get("display_name", getattr(current_profile, "display_name", None)),
         joined_via_starter_pack=kwargs.get("joined_via_starter_pack", getattr(current_profile, "joined_via_starter_pack", None)), # not officially supported
         labels=kwargs.get("labels", getattr(current_profile, "labels", None)), # not officially supported
