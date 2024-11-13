@@ -142,14 +142,14 @@ def build_rich_post(client, text):
 def send_post(content, **kwargs):
     access_token = kwargs.get("access_token")
     account_id = kwargs.get("account_id")
+    bluesky = kwargs.get("bluesky")
     params = kwargs.get("params", {})
     post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     # visibility = kwargs.get("visibility")
 
     # set up bluesky
-    bluesky = instantiate(access_token, account_id)
-    if not bluesky:
+    if not bluesky or (bluesky := instantiate(access_token, account_id)):
         log_message = message("LOG_EVENT", event="Bluesky has failed to be instantiated")
         logger.warning(log_message)
         return
@@ -220,10 +220,10 @@ def check_health(**kwargs):
 def update_account(**kwargs):
     access_token = kwargs.get("access_token")
     account_id = kwargs.get("account_id")
+    bluesky = kwargs.get("bluesky")
 
     # set up bluesky
-    bluesky = instantiate(access_token, account_id)
-    if not bluesky:
+    if not bluesky or (bluesky := instantiate(access_token, account_id)):
         log_message = message("LOG_EVENT", event="Bluesky has failed to be instantiated")
         logger.warning(log_message)
         return

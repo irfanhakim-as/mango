@@ -63,14 +63,13 @@ def prepare_post(title, tags, link):
 def send_post(content, **kwargs):
     access_token = kwargs.get("access_token")
     api_base_url = kwargs.get("api_base_url")
+    mastodon = kwargs.get("mastodon")
     post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     visibility = kwargs.get("visibility")
 
     # set up mastodon
-    mastodon = instantiate(access_token, api_base_url)
-
-    if not mastodon:
+    if not mastodon or (mastodon := instantiate(access_token, api_base_url)):
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
         logger.warning(log_message)
         return
@@ -138,11 +137,11 @@ def update_account(**kwargs):
     display_name = kwargs.get("display_name")
     fields = kwargs.get("fields")
     locked = kwargs.get("locked")
+    mastodon = kwargs.get("mastodon")
     note = kwargs.get("note")
 
     # set up mastodon
-    mastodon = instantiate(access_token, api_base_url)
-    if not mastodon:
+    if not mastodon or (mastodon := instantiate(access_token, api_base_url)):
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
         logger.warning(log_message)
         return
