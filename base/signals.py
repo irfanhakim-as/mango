@@ -58,6 +58,6 @@ def update_accounts(sender, instance, created, **kwargs):
         ))
         account = update_mastodon_account(**params)
     if not account:
-        verbose_warning = "Account failed to be updated"
+        verbose_warning = 'Account "%s" failed to be updated' % instance.pk
         log_message = message("LOG_EXCEPT", exception=None, verbose=verbose_warning, object=instance)
         logger.warning(log_message)
