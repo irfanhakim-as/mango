@@ -141,7 +141,7 @@ def update_account(**kwargs):
     note = kwargs.get("note")
 
     # set up mastodon
-    if not mastodon or (mastodon := instantiate(access_token, api_base_url)):
+    if not (mastodon or (mastodon := instantiate(access_token, api_base_url))):
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
         logger.warning(log_message)
         return
