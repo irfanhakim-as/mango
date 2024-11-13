@@ -37,24 +37,24 @@ def schedule_posts(sender, instance, created, **kwargs):
 def update_accounts(sender, instance, created, **kwargs):
     host = getattr(instance, "host")
     params = dict(
-        access_token = getattr(instance, "access_token"),
-        display_name = getattr(instance, "display_name"),
+        access_token=getattr(instance, "access_token"),
+        display_name=getattr(instance, "display_name"),
     )
     # update account
     if host and host.lower() == "bluesky":
         params.update(dict(
-            account_id = "%s.%s" % (getattr(instance, "uid"), get_domain(getattr(instance, "api_base_url"))),
-            description = getattr(instance, "note"),
+            account_id="%s.%s" % (getattr(instance, "uid"), get_domain(getattr(instance, "api_base_url"))),
+            description=getattr(instance, "note"),
         ))
         account = update_bluesky_account(**params)
     else:
         params.update(dict(
-            api_base_url = getattr(instance, "api_base_url"),
-            bot = getattr(instance, "is_bot"),
-            discoverable = getattr(instance, "is_discoverable"),
-            fields = getattr(instance, "fields"),
-            locked = getattr(instance, "is_locked"),
-            note = getattr(instance, "note"),
+            api_base_url=getattr(instance, "api_base_url"),
+            bot=getattr(instance, "is_bot"),
+            discoverable=getattr(instance, "is_discoverable"),
+            fields=getattr(instance, "fields"),
+            locked=getattr(instance, "is_locked"),
+            note=getattr(instance, "note"),
         ))
         account = update_mastodon_account(**params)
     if not account:
