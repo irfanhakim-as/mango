@@ -39,6 +39,7 @@ def update_accounts(sender, instance, created, **kwargs):
     params = dict(
         access_token=getattr(instance, "access_token"),
         display_name=getattr(instance, "display_name"),
+        fields=getattr(instance, "fields"),
     )
     # update account
     if host and host.lower() == "bluesky":
@@ -52,7 +53,6 @@ def update_accounts(sender, instance, created, **kwargs):
             api_base_url=getattr(instance, "api_base_url"),
             bot=getattr(instance, "is_bot"),
             discoverable=getattr(instance, "is_discoverable"),
-            fields=getattr(instance, "fields"),
             locked=getattr(instance, "is_locked"),
             note=getattr(instance, "note"),
         ))

@@ -19,6 +19,7 @@ class Command(BaseCommand):
             params = dict(
                 access_token=getattr(account, "access_token"),
                 display_name=getattr(account, "display_name"),
+                fields=getattr(account, "fields"),
             )
             # update account
             if host and host.lower() == "bluesky":
@@ -32,7 +33,6 @@ class Command(BaseCommand):
                     api_base_url=getattr(account, "api_base_url"),
                     bot=getattr(account, "is_bot"),
                     discoverable=getattr(account, "is_discoverable"),
-                    fields=getattr(account, "fields"),
                     locked=getattr(account, "is_locked"),
                     note=getattr(account, "note"),
                 ))
