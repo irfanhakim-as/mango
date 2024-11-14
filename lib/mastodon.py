@@ -49,7 +49,7 @@ def prepare_post(title, tags, link):
     if sum((title_count, tags_count, link_count, emoji_count - emoji_length)) > char_limit:
         tags = ""
         emoji_count = count_emoji(title + tags + link)[0]
-        title = title[:char_limit-link_count-emoji_count]
+        title = title[:char_limit - (link_count + emoji_count)]
     # return post content
     return message(
         "FEED_POST",
