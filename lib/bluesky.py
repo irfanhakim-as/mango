@@ -113,9 +113,9 @@ def build_rich_post(client, text):
             if link_metadata and ((description := link_metadata.get("description")) and (title := link_metadata.get("title"))):
                 thumbnail_bin = getattr(requests.get(thumbnail), "content", None) if (thumbnail := link_metadata.get("thumbnail")) else None
                 params = dict(
-                    description=link_metadata.get("description"),
+                    description=description,
                     thumb=client.upload_blob(data=thumbnail_bin).blob if thumbnail_bin else None,
-                    title=link_metadata.get("title"),
+                    title=title,
                     uri=part,
                 )
                 link_embed = atproto_models.AppBskyEmbedExternal.Main(
