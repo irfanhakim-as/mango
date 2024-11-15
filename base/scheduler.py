@@ -106,7 +106,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         # prepare post title, tags, and link
         post_title = emojize(post_object.subject.title)
         post_tags = emojize(" " + " ".join(["#" + sanitise_string(i) for i in post_object.subject.tags]) if post_object.subject.tags else "")
-        post_link = emojize("\n\n%s" % post_object.subject.link if post_object.subject.link else "")
+        post_link = emojize(post_object.subject.link if post_object.subject.link else "")
         bluesky_post = prepare_bluesky_post(post_title, post_tags, post_link)
         mastodon_post = prepare_mastodon_post(post_title, post_tags, post_link)
 
