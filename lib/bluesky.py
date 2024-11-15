@@ -163,7 +163,7 @@ def send_post(content, **kwargs):
         #     visibility = "direct"
 
     # make post rich
-    content, link_embed = build_rich_post(bluesky, content)
+    content, link_embed = build_rich_post(bluesky, content, embed_only=True)
 
     # include link embed object if applicable
     params.update(embed=link_embed) if link_embed else None
