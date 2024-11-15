@@ -66,14 +66,15 @@ def instantiate(access_token, account_id):
 
 
 #====================BLUESKY: PREPARE POST====================#
-def prepare_post(title, tags, link):
+def prepare_post(title, tags, link, **kwargs):
+    embed_only = kwargs.get("embed_only", False)
     # set character limits
     char_limit = 300
     link_limit = sum((23, 2)) # additional 2 for newlines
     # count characters
     title_count = len(title)
     tags_count = len(tags)
-    link_count = 0 if not link else (link_limit if sum((len(link), 2)) > link_limit else sum((len(link), 2)))
+    link_count = 0 if embed_only or not link else (link_limit if sum((len(link), 2)) > link_limit else sum((len(link), 2)))
     emoji_count, emoji_length = count_emoji(title + tags + link)
     # prioritise removing tags, then limiting title to accommodate link
     if sum((title_count, tags_count, link_count, emoji_count - emoji_length)) > char_limit:
@@ -85,12 +86,13 @@ def prepare_post(title, tags, link):
         "FEED_POST",
         title=title,
         tags=tags,
-        link=link
+        link=link if embed_only or not link else "\n\n%s" % link,
     )
 
 
 #====================BLUESKY: BUILD RICH POST====================#
-def build_rich_post(client, text):
+def build_rich_post(client, text, **kwargs):
+    embed_only = kwargs.get("embed_only", False)
     link_embed = None
     rich_post = client_utils.TextBuilder()
     # define patterns
@@ -103,7 +105,8 @@ def build_rich_post(client, text):
     for part in parts:
         # build link
         if re.match(url_pattern, part):
-            rich_post.link(part, part)
+            if not embed_only:
+                rich_post.link(part, part)
             # skip creating link embed object if one exists
             if link_embed:
                 continue
