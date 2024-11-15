@@ -99,6 +99,14 @@ class ObjectItem(models.Model):
         help_text=_("Tags of the object item.")
     )
 
+    date_created = models.DateTimeField(
+        blank=False,
+        null=False,
+        default=timezone.now,
+        verbose_name=_("Date created"),
+        help_text=_("Date when the object was created.")
+    )
+
     def clean(self):
         # run parent clean method
         super().clean()
