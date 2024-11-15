@@ -55,7 +55,7 @@ def prepare_post(title, tags, link):
         "FEED_POST",
         title=title,
         tags=tags,
-        link=link
+        link="\n\n%s" % link if link else link,
     )
 
 
