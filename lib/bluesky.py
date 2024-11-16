@@ -7,8 +7,10 @@ from atproto import (
     models as atproto_models,
 )
 from bs4 import BeautifulSoup
-# from django.conf import settings
+from io import BytesIO
 from pathlib import Path
+from PIL import Image
+# from django.conf import settings
 from base.methods import (
     count_emoji,
     get_active_accounts,
@@ -39,6 +41,24 @@ def get_content_md(url):
         thumbnail=thumbnail["content"] if thumbnail else None,
         title=title["content"] if title else None,
     )
+
+
+#====================UTILS: VALIDATE IMAGE SIZE====================#
+def validate_image_size(image_binary, **kwargs):
+    factor = kwargs.get("factor", 0.5)
+    limit = kwargs.get("limit", 999997)
+    quality = kwargs.get("quality", 50)
+    # return original image if no binary data or within size limit
+    if not image_binary or len(image_binary) < limit:
+        return image_binary
+    # load the image from binary data
+    image = Image.open(BytesIO(image_binary))
+    # downsize the image
+    resized_image = image.resize((int(image.width * factor), int(image.height * factor)))
+    # save the resized image to a BytesIO object
+    resized_image.save(output := BytesIO(), format=image.format, quality=quality, optimize=True)
+    # return the resized image binary if within size limit
+    return resized_binary if len(resized_binary := output.getvalue()) < limit else None
 
 
 #====================BLUESKY: INSTANTIATE====================#
