@@ -134,7 +134,8 @@ def build_rich_post(client, text, **kwargs):
             link_metadata = get_content_md(part)
             # create link embed object if sufficient metadata
             if link_metadata and ((description := link_metadata.get("description")) and (title := link_metadata.get("title"))):
-                thumbnail_bin = getattr(requests.get(thumbnail), "content", None) if (thumbnail := link_metadata.get("thumbnail")) else None
+                # adhere to blob size limit
+                thumbnail_bin = validate_image_size(getattr(requests.get(thumbnail), "content", None), factor=1.0, quality=85) if (thumbnail := link_metadata.get("thumbnail")) else None
                 params = dict(
                     description=description,
                     thumb=client.upload_blob(data=thumbnail_bin).blob if thumbnail_bin else None,
