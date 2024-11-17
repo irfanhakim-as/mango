@@ -4,7 +4,10 @@ import logging
 import os
 import re
 import urllib.request
-from datetime import datetime
+from datetime import (
+    datetime,
+    timedelta,
+)
 from dateutil import (
     parser,
     tz,
@@ -300,6 +303,17 @@ def string_list(l):
 #====================UTILS: UNIQUE LIST====================#
 def unique_list(l):
     return list(set(l))
+
+
+#====================UTILS: GET EXPIRED DATE====================#
+def get_expired_date(max_age):
+    # return date of creation that should have expired at the current time
+    return get_datetime().get("utc_now") - timedelta(days=max_age)
+
+
+#====================UTILS: IS EXPIRED====================#
+def is_expired(datetime, max_age):
+    return datetime < get_expired_date(max_age)
 
 
 #====================DATETIME: CONVERT DATETIME TIMEZONE====================#
