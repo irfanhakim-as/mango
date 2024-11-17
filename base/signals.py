@@ -1,4 +1,5 @@
 import logging
+from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from base.methods import (
@@ -6,6 +7,7 @@ from base.methods import (
     get_domain,
     get_post_model,
     get_schedule_model,
+    is_expired,
     message,
 )
 from lib.bluesky import update_account as update_bluesky_account
@@ -17,13 +19,18 @@ PostModel = get_post_model()
 ScheduleModel = get_schedule_model()
 
 
+#====================SETTINGS: GETATTR====================#
+POST_DATE = getattr(settings, "POST_DATE")
+POST_EXPIRY = getattr(settings, "POST_EXPIRY")
+
+
 #====================POST: SCHEDULE POSTS====================#
 @receiver(post_save, sender=PostModel)
 def schedule_posts(sender, instance, created, **kwargs):
     schedule_related_name = "%s_set" % ScheduleModel.__name__.lower()
     schedule_obj = getattr(instance, schedule_related_name)
-    # schedule object if it has not been scheduled yet
-    if not schedule_obj.exists():
+    # schedule object if it has neither been scheduled nor past expiry date
+    if not (schedule_obj.exists() or is_expired(getattr(instance, POST_DATE), POST_EXPIRY)):
         log_message = message("LOG_EVENT", event='Scheduling %s object "%s"' % (PostModel.__name__, instance))
         logger.info(log_message)
         schedule_post(instance)
