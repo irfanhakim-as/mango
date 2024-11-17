@@ -32,7 +32,7 @@ SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
 
 
 ##################################################################
-# Mastodon Settings
+# Post Settings
 ##################################################################
 
 DEFAULT_VISIBILITY = os.getenv("DEFAULT_VISIBILITY", "public")
