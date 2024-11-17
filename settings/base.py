@@ -15,6 +15,7 @@ COMPULSORY_SETTINGS.extend([
     "DEFAULT_VISIBILITY",
     "POST_EXPIRY",
     "POST_LIMIT",
+    "POST_ORDER",
     "RETRY_POST",
     "CELERY_BROKER_URL",
     "CELERY_RESULT_BACKEND",
@@ -39,6 +40,7 @@ SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
 DEFAULT_VISIBILITY = os.getenv("DEFAULT_VISIBILITY", "public")
 POST_EXPIRY = int(os.getenv("POST_EXPIRY", "3"))
 POST_LIMIT = int(os.getenv("POST_LIMIT", "0"))
+POST_ORDER = os.getenv("POST_ORDER", "id")
 RETRY_POST = os.getenv("RETRY_POST", True) != "false"
 
 
