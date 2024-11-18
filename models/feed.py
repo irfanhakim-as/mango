@@ -8,11 +8,3 @@ class FeedObject(ObjectFeed):
     class Meta(ObjectFeed.Meta):
         verbose_name = "Feed object"
         verbose_name_plural = "feed objects"
-
-    date_format = models.CharField(
-        blank=True,
-        null=True,
-        max_length=255,
-        verbose_name=_("Date format"),
-        help_text=_("The date format of the feed's entries.")
-    )
