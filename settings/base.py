@@ -12,11 +12,11 @@ COMPULSORY_SETTINGS.extend([
     "POST_MODEL",
     "SCHEDULE_MODEL",
     "SCHEDULER_TIMEZONE",
-    # "ACCESS_TOKEN",
-    # "API_BASE_URL",
-    # "BOT_ID",
     "DEFAULT_VISIBILITY",
+    "POST_DATE",
+    "POST_EXPIRY",
     "POST_LIMIT",
+    "POST_ORDER",
     "RETRY_POST",
     "CELERY_BROKER_URL",
     "CELERY_RESULT_BACKEND",
@@ -27,7 +27,7 @@ COMPULSORY_SETTINGS.extend([
     "SYNC_CONFIG",
 ])
 ORGANIC_POSTS = os.getenv("ORGANIC_POSTS", False) == "true"
-ACCOUNT_MODEL = os.getenv("ACCOUNT_MODEL", "base.MastodonAccount")
+ACCOUNT_MODEL = os.getenv("ACCOUNT_MODEL", "base.AccountObject")
 FEED_MODEL = os.getenv("FEED_MODEL", "base.FeedObject")
 POST_MODEL = os.getenv("POST_MODEL", "base.PostItem")
 SCHEDULE_MODEL = os.getenv("SCHEDULE_MODEL", "base.PostSchedule")
@@ -35,14 +35,14 @@ SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
 
 
 ##################################################################
-# Mastodon Settings
+# Post Settings
 ##################################################################
 
-# ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "/base/base/mastodon.secret")
-# API_BASE_URL = os.getenv("API_BASE_URL")
-# BOT_ID = os.getenv("BOT_ID")
 DEFAULT_VISIBILITY = os.getenv("DEFAULT_VISIBILITY", "public")
+POST_DATE = os.getenv("POST_DATE", "date_created")
+POST_EXPIRY = int(os.getenv("POST_EXPIRY", "3"))
 POST_LIMIT = int(os.getenv("POST_LIMIT", "0"))
+POST_ORDER = os.getenv("POST_ORDER", "id")
 RETRY_POST = os.getenv("RETRY_POST", True) != "false"
 
 

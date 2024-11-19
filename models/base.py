@@ -65,7 +65,7 @@ class ObjectItem(models.Model):
         blank=True,
         null=True,
         verbose_name=_("Post ID"),
-        help_text=_("ID of the published Mastodon post.")
+        help_text=_("ID of the published object post.")
     )
 
     item_id = models.CharField(
@@ -97,6 +97,14 @@ class ObjectItem(models.Model):
         null=True,
         verbose_name=_("Item tags"),
         help_text=_("Tags of the object item.")
+    )
+
+    date_created = models.DateTimeField(
+        blank=False,
+        null=False,
+        default=timezone.now,
+        verbose_name=_("Date created"),
+        help_text=_("Date when the object was created.")
     )
 
     def clean(self):
@@ -140,13 +148,22 @@ class ObjectAccount(models.Model):
         help_text=_("Unique Identifier of the account.")
     )
 
+    host = models.CharField(
+        blank=False,
+        null=False,
+        default="mastodon",
+        max_length=255,
+        verbose_name=_("Host"),
+        help_text=_("The underlying host service of the server instance.")
+    )
+
     access_token = models.CharField(
         blank=False,
         null=False,
         unique=True,
         max_length=255,
         verbose_name=_("Access token"),
-        help_text=_("Secure token required to authenticate with the Mastodon instance's API.")
+        help_text=_("Secure token required to authenticate with the server instance's API.")
     )
 
     api_base_url = models.CharField(
@@ -154,7 +171,7 @@ class ObjectAccount(models.Model):
         null=False,
         max_length=255,
         verbose_name=_("API endpoint"),
-        help_text=_("API endpoint or URL for the Mastodon instance.")
+        help_text=_("API endpoint or URL for the server instance.")
     )
 
     is_bot = models.BooleanField(

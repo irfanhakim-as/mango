@@ -3,7 +3,6 @@ import math
 import random
 from django.conf import settings
 from base.methods import (
-    count_emoji,
     emojize,
     get_active_accounts,
     get_domain,
@@ -12,7 +11,16 @@ from base.methods import (
     sanitise_string,
     string_list,
 )
-from lib.mastodon import send_post
+from lib.bluesky import (
+    instantiate as instantiate_bluesky,
+    prepare_post as prepare_bluesky_post,
+    send_post as send_bluesky_post,
+)
+from lib.mastodon import (
+    instantiate as instantiate_mastodon,
+    prepare_post as prepare_mastodon_post,
+    send_post as send_mastodon_post,
+)
 logger = logging.getLogger("base")
 
 
@@ -43,6 +51,7 @@ def schedule_post(schedule_model, subject_object, **kwargs):
 #====================BASE: POST SCHEDULER====================#
 def post_scheduler(pending_objects, updating_objects, **kwargs):
     account_objects = kwargs.get("account_objects", get_active_accounts())
+    clients = kwargs.get("clients", {})
     limit = kwargs.get("limit", POST_LIMIT)
     organic = kwargs.get("organic", ORGANIC_POSTS)
     retry_post = kwargs.get("retry_post", RETRY_POST)
@@ -74,52 +83,61 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
             logger.info(log_message)
         return
 
+    # instantiate all clients
+    for account in account_objects:
+        access_token = getattr(account, "access_token", None)
+        api_base_url = getattr(account, "api_base_url", None)
+        api_domain = get_domain(api_base_url)
+        host = getattr(account, "host", None)
+        uid = getattr(account, "uid", None)
+        # format a unique account id
+        account_id = "%s%s%s" % (uid, "." if host and host.lower() == "bluesky" else "@", api_domain) if api_domain and uid else None
+        client = instantiate_bluesky(access_token, account_id) if host and host.lower() == "bluesky" else instantiate_mastodon(access_token, api_base_url)
+        # abort if client instantiation failed
+        if not client:
+            verbose_error = 'Client "%s" has failed to be instantiated' % account_id
+            log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=account.pk)
+            logger.error(log_error)
+            return
+        clients[account.pk] = dict(account_id=account_id, client=client, host=host)
+
     for post_object in post_objects:
         delete = True
         # prepare post title, tags, and link
         post_title = emojize(post_object.subject.title)
         post_tags = emojize(" " + " ".join(["#" + sanitise_string(i) for i in post_object.subject.tags]) if post_object.subject.tags else "")
-        post_link = emojize("\n\n%s" % post_object.subject.link if post_object.subject.link else "")
-
-        # ensure title + tags + link does not exceed the character limit. link counts as 23 characters + 2 characters (newlines). emoji counts as 2 characters.
-        char_limit = 500
-        title_count = len(post_title)
-        tags_count = len(post_tags)
-        link_count = 25 if post_link else 0
-        emoji_count = count_emoji(post_title + post_tags + post_link)
-        # prioritise removing tags, then limiting title to accommodate link
-        if title_count + tags_count + link_count + emoji_count > char_limit:
-            post_tags = ""
-            emoji_count = count_emoji(post_title + post_tags + post_link)
-            post_title = post_title[:char_limit-link_count-emoji_count]
-
-        # prepare content
-        content = message(
-            "MASTODON_POST",
-            title=post_title,
-            tags=post_tags,
-            link=post_link
-        )
+        post_link = emojize(post_object.subject.link if post_object.subject.link else "")
+        bluesky_post = prepare_bluesky_post(post_title, post_tags, post_link, embed_only=True)
+        mastodon_post = prepare_mastodon_post(post_title, post_tags, post_link)
 
         for account in account_objects:
-            access_token = getattr(account, "access_token")
-            api_base_url = getattr(account, "api_base_url")
-            api_domain = get_domain(api_base_url)
-            uid = getattr(account, "uid")
-            # format a unique account id
-            account_id = "%s@%s" % (uid, api_domain) if api_domain and uid else None
+            account_client = clients.get(account.pk, {})
+            account_id = account_client.get("account_id")
+            client = account_client.get("client")
+            host = account_client.get("host")
             # get post_id specific to account if it is an existing and format conforming post
             account_pid = [pid.split("_")[-1] for pid in post_object.subject.post_id if pid.split("_")[0] == account_id] if post_object.subject.post_id and isinstance(post_object.subject.post_id, list) else []
             account_pid = account_pid[0] if account_pid else None
             try:
-                post_id = send_post(
-                    content,
-                    access_token=access_token,
-                    api_base_url=api_base_url,
-                    post_id=account_pid,
-                    receiver=post_object.receiver,
-                    visibility=post_object.visibility,
-                )
+                if host and host.lower() == "bluesky":
+                    post_id = send_bluesky_post(
+                        bluesky_post,
+                        # access_token=access_token,
+                        # account_id=account_id,
+                        bluesky=client,
+                        post_id=account_pid,
+                        receiver=post_object.receiver,
+                    )
+                else:
+                    post_id = send_mastodon_post(
+                        mastodon_post,
+                        # access_token=access_token,
+                        # api_base_url=api_base_url,
+                        mastodon=client,
+                        post_id=account_pid,
+                        receiver=post_object.receiver,
+                        visibility=post_object.visibility,
+                    )
             except Exception as e:
                 # cancel mark for deletion due to error
                 delete = False
@@ -144,7 +162,9 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
                 log_message = message("LOG_EVENT", event='Post "%s" (%s) has been sent' % (post_object, pid))
                 logger.info(log_message)
                 # cancel mark for deletion if post has not been sent on an account
-                if not pid in post_object.subject.post_id:
+                # NOTE: check for account_id instead as pid changes with every quote post for bluesky due to absence of real post updates
+                # if not pid in post_object.subject.post_id:
+                if not any(account_id in i for i in post_object.subject.post_id):
                     delete = False
         # delete post schedule object if it has been sent successfully on all accounts or if configured to not retry
         if delete or not retry_post:

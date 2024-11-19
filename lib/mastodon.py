@@ -2,6 +2,7 @@ import logging
 from mastodon import Mastodon
 from django.conf import settings
 from base.methods import (
+    count_emoji,
     get_active_accounts,
     get_domain,
     message,
@@ -10,23 +11,19 @@ logger = logging.getLogger("base")
 
 
 #====================SETTINGS: GETATTR====================#
-# ACCESS_TOKEN = getattr(settings, "ACCESS_TOKEN")
-# API_BASE_URL = getattr(settings, "API_BASE_URL")
-# BOT_ID = getattr(settings, "BOT_ID")
 DEFAULT_VISIBILITY = getattr(settings, "DEFAULT_VISIBILITY")
 
 
 #====================MASTODON: INSTANTIATE====================#
-def instantiate_mastodon(access_token, home_instance):
+def instantiate(access_token, home_instance):
     if not (access_token and home_instance):
         log_message = message("LOG_EVENT", event="Mastodon not configured to be instantiated")
         logger.warning(log_message)
         return
-    else:
-        return Mastodon(
-            access_token=access_token,
-            api_base_url=home_instance,
-        )
+    return Mastodon(
+        access_token=access_token,
+        api_base_url=home_instance,
+    )
 
 
 #====================MASTODON: CLEAN VISIBILITY====================#
@@ -38,18 +35,41 @@ def clean_visibility(visibility, **kwargs):
         return default_visibility.lower()
 
 
+#====================MASTODON: PREPARE POST====================#
+def prepare_post(title, tags, link):
+    # set character limits
+    char_limit = 500
+    link_limit = sum((23, 2)) # additional 2 for newlines
+    # count characters
+    title_count = len(title)
+    tags_count = len(tags)
+    link_count = 0 if not link else (link_limit if sum((len(link), 2)) > link_limit else sum((len(link), 2)))
+    emoji_count, emoji_length = count_emoji(title + tags + link)
+    # prioritise removing tags, then limiting title to accommodate link
+    if sum((title_count, tags_count, link_count, emoji_count - emoji_length)) > char_limit:
+        tags = ""
+        emoji_count = count_emoji(title + tags + link)[0]
+        title = title[:char_limit - (link_count + emoji_count)]
+    # return post content
+    return message(
+        "FEED_POST",
+        title=title,
+        tags=tags,
+        link="\n\n%s" % link if link else link,
+    )
+
+
 #====================MASTODON: SEND POST====================#
 def send_post(content, **kwargs):
     access_token = kwargs.get("access_token")
     api_base_url = kwargs.get("api_base_url")
+    mastodon = kwargs.get("mastodon")
     post_id = kwargs.get("post_id")
     receiver = kwargs.get("receiver")
     visibility = kwargs.get("visibility")
 
     # set up mastodon
-    mastodon = instantiate_mastodon(access_token, api_base_url)
-
-    if not mastodon:
+    if not (mastodon or (mastodon := instantiate(access_token, api_base_url))):
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
         logger.warning(log_message)
         return
@@ -65,17 +85,17 @@ def send_post(content, **kwargs):
 
     # send mastodon post
     if not post_id:
-        toot = mastodon.status_post(content, **params)
+        post = mastodon.status_post(content, **params)
     else:
-        toot = mastodon.status_update(post_id, status=content)
+        post = mastodon.status_update(post_id, status=content)
 
     # return post id
-    return toot.get("id")
+    return post.get("id")
 
 
-#====================MASTODON: CHECK MASTODON HEALTH====================#
-def check_mastodon_health(**kwargs):
-    account_objects = kwargs.get("account_objects", get_active_accounts())
+#====================MASTODON: CHECK HEALTH====================#
+def check_health(**kwargs):
+    account_objects = kwargs.get("account_objects", get_active_accounts(host="mastodon"))
     visibility = "private"
 
     if not account_objects:
@@ -117,11 +137,11 @@ def update_account(**kwargs):
     display_name = kwargs.get("display_name")
     fields = kwargs.get("fields")
     locked = kwargs.get("locked")
+    mastodon = kwargs.get("mastodon")
     note = kwargs.get("note")
 
     # set up mastodon
-    mastodon = instantiate_mastodon(access_token, api_base_url)
-    if not mastodon:
+    if not (mastodon or (mastodon := instantiate(access_token, api_base_url))):
         log_message = message("LOG_EVENT", event="Mastodon has failed to be instantiated")
         logger.warning(log_message)
         return

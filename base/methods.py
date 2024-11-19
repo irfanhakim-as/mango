@@ -4,7 +4,10 @@ import logging
 import os
 import re
 import urllib.request
-from datetime import datetime
+from datetime import (
+    datetime,
+    timedelta,
+)
 from dateutil import (
     parser,
     tz,
@@ -39,15 +42,15 @@ def is_debug():
 
 
 #====================BASE: GET ACTIVE ACCOUNTS====================#
-def get_active_accounts():
+def get_active_accounts(**kwargs):
     AccountModel = get_account_model()
-    return AccountModel.objects.filter(is_enabled=True) if AccountModel else []
+    return AccountModel.objects.filter(is_enabled=True, **kwargs) if AccountModel else []
 
 
 #====================BASE: GET ACTIVE FEEDS====================#
-def get_active_feeds():
+def get_active_feeds(**kwargs):
     FeedModel = get_feed_model()
-    return FeedModel.objects.filter(is_enabled=True) if FeedModel else []
+    return FeedModel.objects.filter(is_enabled=True, **kwargs) if FeedModel else []
 
 
 #====================BASE: SYNC DATA====================#
@@ -235,12 +238,14 @@ def sanitise_value(v):
 
 #====================UTILS: COUNT EMOJI====================#
 def count_emoji(text):
-    return emoji.emoji_count(text)
+    tokens = list(emoji.analyze(text))
+    # return count, length of emoji
+    return len(tokens), sum([len(t.value.emoji) for t in tokens])
 
 
 #====================UTILS: HAS EMOJI====================#
 def has_emoji(text):
-    return count_emoji(text) > 0
+    return count_emoji(text)[0] > 0
 
 
 #====================UTILS: EMOJIZE====================#
@@ -298,6 +303,17 @@ def string_list(l):
 #====================UTILS: UNIQUE LIST====================#
 def unique_list(l):
     return list(set(l))
+
+
+#====================UTILS: GET EXPIRED DATE====================#
+def get_expired_date(max_age):
+    # return date of creation that should have expired at the current time
+    return get_datetime().get("utc_now") - timedelta(days=max_age)
+
+
+#====================UTILS: IS EXPIRED====================#
+def is_expired(datetime, max_age):
+    return datetime < get_expired_date(max_age)
 
 
 #====================DATETIME: CONVERT DATETIME TIMEZONE====================#
