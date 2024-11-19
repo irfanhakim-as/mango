@@ -30,10 +30,14 @@ def schedule_posts(sender, instance, created, **kwargs):
     schedule_related_name = "%s_set" % ScheduleModel.__name__.lower()
     schedule_obj = getattr(instance, schedule_related_name)
     # schedule object if it has neither been scheduled nor past expiry date
-    if not (schedule_obj.exists() or is_expired(getattr(instance, POST_DATE), POST_EXPIRY)):
-        log_message = message("LOG_EVENT", event='Scheduling %s object "%s"' % (PostModel.__name__, instance))
-        logger.info(log_message)
-        schedule_post(instance)
+    if not schedule_obj.exists():
+        if not is_expired(getattr(instance, POST_DATE), POST_EXPIRY):
+            log_message = message("LOG_EVENT", event='Scheduling %s object "%s"' % (PostModel.__name__, instance))
+            logger.info(log_message)
+            schedule_post(instance)
+        else:
+            log_message = message("LOG_EVENT", event='%s object "%s" has expired' % (PostModel.__name__, instance))
+            logger.info(log_message)
     else:
         log_message = message("LOG_EVENT", event='%s object "%s" already has a %s object "%s"' % (PostModel.__name__, instance, ScheduleModel.__name__, schedule_obj.first().pk))
         logger.info(log_message)
