@@ -130,10 +130,9 @@ def build_rich_post(client, text, **kwargs):
             # skip creating link embed object if one exists
             if link_embed:
                 continue
-            # get required metadata
-            link_metadata = get_content_md(part)
             # create link embed object if sufficient metadata
-            if link_metadata and ((description := link_metadata.get("description")) and (title := link_metadata.get("title"))):
+            sufficient_metadata = (link_metadata := get_content_md(part)) and ((description := link_metadata.get("description")) and (title := link_metadata.get("title")))
+            if sufficient_metadata:
                 # adhere to blob size limit
                 thumbnail_bin = validate_image_size(getattr(requests.get(thumbnail), "content", None), factor=1.0, quality=85) if (thumbnail := link_metadata.get("thumbnail")) else None
                 params = dict(
@@ -145,6 +144,8 @@ def build_rich_post(client, text, **kwargs):
                 link_embed = atproto_models.AppBskyEmbedExternal.Main(
                     external=atproto_models.AppBskyEmbedExternal.External(**params)
                 )
+            # add link regardless if no metadata was extracted
+            rich_post.link(part, part) if embed_only and not sufficient_metadata else None
         else:
             # split by spaces to handle individual words and hashtags - keep the spaces as separate elements
             words = re.split(r'(\s+)', part)
