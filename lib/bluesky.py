@@ -145,7 +145,7 @@ def build_rich_post(client, text, **kwargs):
                     external=atproto_models.AppBskyEmbedExternal.External(**params)
                 )
             # add link regardless if no metadata was extracted
-            rich_post.link(part, part) if embed_only and not sufficient_metadata else None
+            rich_post.text("\n\n").link(part, part) if embed_only and not sufficient_metadata else None
         else:
             # split by spaces to handle individual words and hashtags - keep the spaces as separate elements
             words = re.split(r'(\s+)', part)
