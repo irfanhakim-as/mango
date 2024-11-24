@@ -44,7 +44,7 @@ def schedule_post(schedule_model, subject_object, **kwargs):
     object_values = dict(name=name, subject=subject_object, receiver=receiver, visibility=visibility)
     post_object = schedule_model.objects.create(**object_values)
 
-    log_message = message("LOG_EVENT", event='%s object "%s" (%s) has been scheduled' % (schedule_model.__name__, post_object, post_object.name))
+    log_message = message("LOG_EVENT", event='%s object "%s" (%s) has been scheduled' % (schedule_model.__name__, post_object, post_object.subject))
     logger.info(log_message)
 
 
