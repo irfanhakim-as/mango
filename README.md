@@ -270,7 +270,7 @@ Important libraries such as all the necessary integrations for Bluesky and Masto
 
 Any additional libraries and future integrations for enhancing Mango should be placed in this module.
 
-Extensions to Mango's core [base](base) modules could also be found in this module, such as:
+Extensions to Mango's core [`base`](#base) modules could also be found in this module, such as:
 
 - [lib.messages](lib/messages.py): Extension of [base.messages](base/messages.py)
 - [lib.post](lib/post.py): Extension of [base.post](base/post.py)
