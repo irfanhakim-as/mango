@@ -178,16 +178,20 @@ By default, Mango's core settings are defined in the [conf.base](settings/base.p
     ```diff
         from base.conf.base import *
     +
-    +   EXAMPLE_SETTING = os.getenv("EXAMPLE_SETTING", "default_value")
+    +   EXAMPLE_SETTING = os.getenv("EXAMPLE_SETTING_ENV", "default_value")
     ```
+
+    This example adds a new setting called `EXAMPLE_SETTING` that has the default value of `default_value` and can be supplied a value at runtime to its environment variable, `EXAMPLE_SETTING_ENV`.
 
 2. Defining the setting this way allows the setting's value to be supplied as an environment variable to the application at runtime.
 
     For example, to do so right in the Dockerfile packaging the application:
 
     ```Dockerfile
-        ENV EXAMPLE_SETTING=custom_value
+        ENV EXAMPLE_SETTING_ENV=custom_value
     ```
+
+    In doing so, the `EXAMPLE_SETTING` setting will take on the value of `custom_value` at runtime.
 
 3. The setting you have defined can then be read in your application as follows:
 
