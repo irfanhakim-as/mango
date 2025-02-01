@@ -242,7 +242,16 @@ The `data` module is home to core data files (in JSON) used by Mango. This list 
 
 These data files are essential and offer a simple way for system administrators to configure managed social network accounts, as well as content feeds such as RSS or API endpoints.
 
-Any additional data files needed by your application can be added to this module as well.
+Any additional data files needed by your application can be added to this module as well. In such cases, if you intend to use the data file as a data source and have it sync to i.e. a custom model at runtime, [update](#updating-a-setting) the `SYNC_CONFIG` setting like so:
+
+```py
+    SYNC_CONFIG["example_key"] = {
+        "model": EXAMPLE_MODEL,
+        "data": EXAMPLE_DATA_FILE,
+        # include the following if your model has fields that require uniqueness
+        # "object_id": ("example_id",),
+    }
+```
 
 ### Lib
 
