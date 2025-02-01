@@ -280,7 +280,7 @@ These extensions, and any additional extension you wish to add can be used to mo
 
 ### Commands
 
-Django management commands act as a way to customise or add additional commands that can be used with the application.
+Django management commands act as a way to customise or add additional commands that can be used to perform certain tasks while the application is running.
 
 By default, Mango's `commands` module contains the following commands:
 
