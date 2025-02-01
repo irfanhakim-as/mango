@@ -215,7 +215,7 @@ By default, Mango's core settings are defined in the [conf.base](settings/base.p
         SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kuala_Lumpur")
     ```
 
-2. [Update the setting](#updating-a-setting) by redefining it in the [conf.main](settings/main.py) module with your changes:
+2. Update the setting by redefining it in the [conf.main](settings/main.py) module with your changes:
 
     ```diff
         from base.conf.base import *
@@ -263,7 +263,7 @@ Any additional data files needed by your application can be added to this module
 
 ### Lib
 
-Important libraries such as all the necessary integrations for Bluesky and Mastodon are defined in the [lib](lib) module:
+Important libraries such as all the necessary integrations for Bluesky and Mastodon are defined in the `lib` module:
 
 - [lib.bluesky](lib/bluesky.py): Bluesky library
 - [lib.mastodon](lib/mastodon.py): Mastodon library
@@ -282,7 +282,7 @@ These extensions, and any additional extension you wish to add can be used to mo
 
 Django management commands act as a way to customise or add additional commands that can be used with the application.
 
-By default, Mango's [commands](commands) module contains the following commands:
+By default, Mango's `commands` module contains the following commands:
 
 - [commands.check_health](commands/check_health.py): Checks the health of managed bots by sending a test post on each of them
 - [commands.clean_data](commands/clean_data.py): Updates and cleans post/content related data from the database
