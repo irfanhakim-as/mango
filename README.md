@@ -169,7 +169,7 @@ In some cases, you may want to [add](#adding-a-new-model), [remove](#removing-a-
 
 Most configurable settings in a Mango application are defined in a settings file that resides in the `conf` module. This way, these settings can be read and accessed from anywhere in your application in a consistent manner.
 
-By default, Mango's core settings are defined in the [conf.base](settings/base.py) module. An extension of this module exists as [conf.main](settings/main.py), which is the central location where the application settings are read from. To update a core setting or add new settings, do so through the [conf.main](settings/main.py) module accordingly.
+By default, Mango's core settings are defined in the [conf.base](settings/base.py) module. An extension of this module exists as [conf.main](settings/main.py), which is the central location where the application settings are read from. To [update a core setting](#updating-a-setting) or [add new settings](#adding-a-new-setting), do so through the [conf.main](settings/main.py) module accordingly.
 
 #### Adding a new setting
 
