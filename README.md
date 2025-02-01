@@ -274,6 +274,16 @@ By default, Mango's [commands](commands) module contains the following commands:
 - [commands.sync_data](commands/sync_data.py): Synchronises data from [data](data) files as per the `SYNC_CONFIG` [configuration](#conf) to the database
 - [commands.update_accounts](commands/update_accounts.py): Updates managed social network accounts based on their model objects
 
+Should your application require any additional commands, you may refer to these commands on how to easily create your own and add them to this module accordingly.
+
+To run a management command, do the following while the Mango application is running:
+
+```sh
+python manage.py <command>
+```
+
+Replace `<command>` with the name of the command module you wish to run (i.e. `example_command`).
+
 ## License
 
 This project is licensed under the [MIT](https://choosealicense.com/licenses/mit) License. Please refer to the [LICENSE](LICENSE) file for more information.
