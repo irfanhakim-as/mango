@@ -296,7 +296,7 @@ Should your application require any additional commands, you may refer to these 
 To run a management command, do the following while the Mango application is running:
 
 ```sh
-python manage.py <command>
+python3 manage.py <command>
 ```
 
 Replace `<command>` with the name of the command module you wish to run (i.e. `example_command`).
