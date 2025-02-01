@@ -65,16 +65,16 @@ Mango is comprised of several key modules:
 > [!IMPORTANT]  
 > Typically, the extending application is not expected to make any direct changes to the `base` module.
 
-Design your application around what has been implemented and established in the `base` module, and extend upon it in an existing or new module which can then be used in your application in its place or in addition. This way, core functionalities of Mango could be reused or enhanced upon according to your application's requirements.
+Design your application around what has been implemented and established in the `base` module, and extend upon it in the [`lib`](#lib) module which can then be used in your application in its place or in addition. This way, core functionalities of Mango could be reused or enhanced upon according to your application's requirements.
 
 Some notable components of the base module are as follows:
 
-- [base.apps](base/apps.py): Application configuration. By default, it initialises Mango's Signals upon application start.
-- [base.messages](base/messages.py): Core message strings used by Mango. An extension, [lib.messages](lib/messages.py) already exists which could be modified according to your application needs.
+- [base.apps](base/apps.py): Application registry. By default, it is used to initialise Mango's signals upon application start. It is currently not possible to modify this module without replacing it entirely.
+- [base.messages](base/messages.py): Core message and icon dictionaries used by Mango. Changes and enhancements can be made through its existing extension, [lib.messages](lib/messages.py).
 - [base.methods](base/methods.py): Core methods used by Mango. A custom module (i.e. `lib.methods`) could be implemented as an alternative or extension of this module in your application.
-- [base.post](base/post.py): Core post methods used by Mango. An extension, [lib.post](lib/post.py) already exists which could be modified according to your application needs.
-- [base.scheduler](base/scheduler.py): Core module responsible for post scheduling. An extension, [lib.scheduler](lib/scheduler.py) already exists which could be modified according to your application needs.
-- [base.signals](base/signals.py): Core module containing Mango's critical signals logic. It is not possible to modify what has established in this module without replacing it entirely.
+- [base.post](base/post.py): Core post methods used by Mango. Changes and enhancements can be made through its existing extension, [lib.post](lib/post.py).
+- [base.scheduler](base/scheduler.py): Core module responsible for post scheduling. Changes and enhancements can be made through its existing extension, [lib.scheduler](lib/scheduler.py).
+- [base.signals](base/signals.py): Core module containing Mango's critical signals logic responsible for features such as scheduling newly created posts and updating managed accounts. It is currently not possible to modify this module without replacing it entirely.
 
 ### Models
 
@@ -91,7 +91,7 @@ By default, Mango's core models are comprised of:
 
 ... Each of which are extensions of base or template models implemented in [models.base](models/base.py).
 
-In some cases, you may want to add, remove, or replace certain models in your application. To do so:
+In some cases, you may want to [add](#adding-a-new-model), [remove](#removing-a-model), or [replace](#replacing-a-core-model) certain models in your application. To do so:
 
 #### Adding a new model
 
@@ -117,9 +117,9 @@ In some cases, you may want to add, remove, or replace certain models in your ap
 
 #### Removing a model
 
-1. It is generally not recommended to remove a core model from Mango.
+1. It is generally not recommended to remove a core model from Mango entirely.
 
-    If you are replacing it (or deleting your own additional model) however, simply remove the model from the [models.\_\_init\_\_](models/__init__.py) module:
+    If you are deleting your own model or a core model with the intent of replacing it, simply remove the model from the [models.\_\_init\_\_](models/__init__.py) module:
 
     ```diff
         from .account import AccountObject
@@ -152,22 +152,24 @@ In some cases, you may want to add, remove, or replace certain models in your ap
 
 3. The Mango application needs to be aware of the new model that is replacing a core model.
 
-    To do so, update the (default) value of the following [setting](#conf) variable, depending on the core model you are replacing:
+    To do so, you will need to update the (default) value of the following setting variable, depending on the core model you are replacing:
 
    - Account model: `ACCOUNT_MODEL`
    - Feed model: `FEED_MODEL`
    - Post model: `POST_MODEL`
    - Schedule model: `SCHEDULE_MODEL`
 
-    For example, if you are replacing the core Post model with your own (i.e. `CustomPostModel`), you would [update the corresponding setting](#updating-a-setting)'s default value as follows:
+    For example, if you are replacing the core Post model with your own (i.e. `CustomPostModel`), [update the corresponding setting](#updating-a-setting)'s default value as follows:
 
    - `POST_MODEL`: `base.CustomPostModel`
+
+    Doing so will ensure that the application uses your new model (i.e. `CustomPostModel`) in place of the core model (i.e. `PostItem`).
 
 ### Conf
 
 Most configurable settings in a Mango application are defined in a settings file that resides in the `conf` module. This way, these settings can be read and accessed from anywhere in your application in a consistent manner.
 
-By default, Mango's core settings are defined in the [conf.base](settings/base.py) module. An extension of this module exists as [conf.main](settings/main.py), which is the central location where the application settings are read from. To update a core setting or add new settings, do so accordingly through the [conf.main](settings/main.py) module.
+By default, Mango's core settings are defined in the [conf.base](settings/base.py) module. An extension of this module exists as [conf.main](settings/main.py), which is the central location where the application settings are read from. To update a core setting or add new settings, do so through the [conf.main](settings/main.py) module accordingly.
 
 #### Adding a new setting
 
@@ -217,7 +219,7 @@ By default, Mango's core settings are defined in the [conf.base](settings/base.p
     +   SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "UTC")
     ```
 
-3. At runtime, the setting you have updated should now take the place of the default setting defined in the [conf.base](settings/base.py) module.
+3. At runtime, the setting you have updated should now take the place of the default setting.
 
 #### Making the setting compulsory
 
@@ -233,14 +235,16 @@ In Mango, it is possible to flag a setting as required or compulsory. In doing s
 
     Instead of redefining it from scratch, simply extend the list to include additional settings you wish to make compulsory.
 
+2. Now, the application will fail the required tests to start if the required setting (i.e. `EXAMPLE_SETTING`) is not defined or has not been supplied a value.
+
 ### Data
 
-The `data` module is home to core data files (in JSON) used by Mango. This list includes:
+The `data` module is home to core data files, in JSON, used by Mango. This list includes:
 
 - [data.accounts](data/accounts.json): Account configuration data
 - [data.feeds](data/feeds.json): Feed configuration data
 
-These data files are essential and offer a simple way for system administrators to configure managed social network accounts, as well as content feeds such as RSS or API endpoints.
+These data files are essential and offer a simple way for system administrators to configure managed social network accounts, as well as content feeds such as RSS or API endpoints, and supply them to the application at runtime.
 
 Any additional data files needed by your application can be added to this module as well. In such cases, if you intend to use the data file as a data source and have it sync to i.e. a custom model at runtime, [update](#updating-a-setting) the `SYNC_CONFIG` setting like so:
 
