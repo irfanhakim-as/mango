@@ -6,9 +6,9 @@ Mango (previously deriving from ["Mastodon"](https://joinmastodon.org) and ["Dja
 
 - [Mango](#mango)
   - [Table of Contents](#table-of-contents)
-  - [Requirements](#requirements)
   - [Features](#features)
   - [Use cases](#use-cases)
+  - [Requirements](#requirements)
   - [Development](#development)
     - [Base](#base)
     - [Models](#models)
@@ -23,13 +23,6 @@ Mango (previously deriving from ["Mastodon"](https://joinmastodon.org) and ["Dja
     - [Lib](#lib)
     - [Commands](#commands)
   - [License](#license)
-
-## Requirements
-
-> [!NOTE]  
-> Mango is built on top of [Dim](https://github.com/irfanhakim-as/dim) (a custom slim image of Django), hence its list of requirements also applies.
-
-Mango's list of requirements are as stipulated in the application's [`requirements.txt`](requirements.txt) file.
 
 ## Features
 
@@ -46,6 +39,13 @@ The Mango framework is actively being used as the underlying framework for the f
 
 - [Rizz](https://github.com/irfanhakim-as/rizz): A simple web application that tracks and posts content from RSS feeds to Federated Social Networks
 - [WaktuSolat](https://github.com/irfanhakim-as/waktusolat): A simple web application that offers real-time prayer time notifications on Federated Social Networks
+
+## Requirements
+
+> [!NOTE]  
+> Mango is built on top of [Dim](https://github.com/irfanhakim-as/dim) (a custom slim image of Django), hence its list of requirements also applies.
+
+Mango's list of requirements are as stipulated in the application's [`requirements.txt`](requirements.txt) file.
 
 ## Development
 
