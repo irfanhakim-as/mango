@@ -8,6 +8,7 @@ Mango (previously deriving from ["Mastodon"](https://joinmastodon.org) and ["Dja
   - [Table of Contents](#table-of-contents)
   - [Requirements](#requirements)
   - [Features](#features)
+  - [Use cases](#use-cases)
   - [Development](#development)
     - [Base](#base)
     - [Models](#models)
@@ -38,6 +39,13 @@ Mango's list of requirements are as stipulated in the application's [`requiremen
 - Streamlined post and account management for effortless maintenance
 - Containerised for a reliable and secure deployment strategy in any environment
 - Enables applications that serve local news from RSS feeds and real-time prayer times for multiple countries
+
+## Use cases
+
+The Mango framework is actively being used as the underlying framework for the following applications:
+
+- [Rizz](https://github.com/irfanhakim-as/rizz): A simple web application that tracks and posts content from RSS feeds to Federated Social Networks
+- [WaktuSolat](https://github.com/irfanhakim-as/waktusolat): A simple web application that offers real-time prayer time notifications on Federated Social Networks
 
 ## Development
 
