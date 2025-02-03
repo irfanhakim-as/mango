@@ -54,11 +54,11 @@ For the best development and deployment strategy, please use the provided [conta
 Mango is comprised of several key modules:
 
 - base: Base module containing most of Mango's core functionality
-- models: Django database
-- conf: Django settings
-- data: Mango data source
-- lib: Additional modules specific to your application
-- commands: Optional Django management commands
+- models: Mango database
+- conf: Mango application settings
+- data: Mango model data source
+- lib: Mango libraries and module extensions
+- commands: Mango management commands
 
 ### Base
 
