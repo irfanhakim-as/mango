@@ -4,7 +4,7 @@ ARG APP="base"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-COPY entrypoint.sh /
+COPY --chmod=0755 entrypoint.sh /
 
 COPY requirements.txt /tmp/
 
