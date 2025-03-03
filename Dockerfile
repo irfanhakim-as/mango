@@ -8,7 +8,7 @@ COPY entrypoint.sh /
 
 COPY requirements.txt /tmp/
 
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
+RUN pip3 install --no-cache-dir --upgrade -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
 
 COPY root/*.py /${APP}/
