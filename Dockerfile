@@ -1,6 +1,6 @@
 FROM ghcr.io/irfanhakim-as/dim:0.1.1-stable-r1
 
-ENV APP="base"
+ARG APP="base"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
