@@ -12,9 +12,9 @@ python3 manage.py makemigrations
 
 python3 manage.py migrate
 
-chmod -R 775 /${APP_ROOT} /var/log/apache2
+chmod -R 775 "/${APP_ROOT}" /var/log/apache2
 
-chown -R www-data: /${APP_ROOT} /var/log/apache2
+chown -R www-data: "/${APP_ROOT}" /var/log/apache2
 
 python3 manage.py test
 
