@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 export APP_ROOT="base"
 
@@ -19,7 +19,7 @@ chown -R www-data: "/${APP_ROOT}" /var/log/apache2
 python3 manage.py test
 
 if [ ${?} -eq 0 ]; then
-    python3 manage.py entrypoint &> /dev/null
+    python3 manage.py entrypoint > /dev/null 2>&1
 
     if [ "${BACKEND_SCHEDULER}" = "celery" ]; then
         /etc/init.d/celeryd start && /etc/init.d/celerybeat start
