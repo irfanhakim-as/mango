@@ -7,7 +7,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             connection.ensure_connection()
-            self.stdout.write(self.style.SUCCESS("Database connection successful."))
         except Exception as e:
             self.stderr.write(self.style.ERROR("Database connection failed."))
             exit(1)
+        self.stdout.write(self.style.SUCCESS("Database connection successful."))
