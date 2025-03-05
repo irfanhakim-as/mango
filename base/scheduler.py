@@ -111,7 +111,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         mastodon_post = prepare_mastodon_post(post_title, post_tags, post_link)
 
         for account in account_objects:
-            account_client = clients.get(account.pk, {})
+            if not (account_client := clients.get(account.pk, None)): continue
             account_id = account_client.get("account_id")
             client = account_client.get("client")
             host = account_client.get("host")
