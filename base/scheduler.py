@@ -98,7 +98,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
             verbose_error = 'Client "%s" has failed to be instantiated' % account_id
             log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=account.pk)
             logger.error(log_error)
-            return
+            continue
         clients[account.pk] = dict(account_id=account_id, client=client, host=host)
 
     for post_object in post_objects:
