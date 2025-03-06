@@ -83,6 +83,7 @@ Some notable components of the base module are as follows:
 - [base.post](base/post.py): Core post methods used by Mango. Changes and enhancements can be made through its existing extension, [lib.post](lib/post.py).
 - [base.scheduler](base/scheduler.py): Core module responsible for post scheduling. Changes and enhancements can be made through its existing extension, [lib.scheduler](lib/scheduler.py).
 - [base.signals](base/signals.py): Core module containing Mango's critical signals logic responsible for features such as scheduling newly created posts and updating managed accounts. It is currently not possible to modify this module without replacing it entirely.
+- [base.urls](base/urls.py): Core URL routing module for Mango. This module defines the main URL patterns for the base application. It is currently not possible to modify this module without replacing it entirely.
 
 ### Models
 
@@ -292,6 +293,7 @@ Django management commands act as a way to customise or add additional commands 
 
 By default, Mango's `commands` module contains the following commands:
 
+- [commands.check_db](commands/check_db.py): Verifies the connection between the application and the database.
 - [commands.check_health](commands/check_health.py): Checks the health of managed bots by sending a test post on each of them
 - [commands.clean_data](commands/clean_data.py): Updates and cleans post/content related data from the database
 - [commands.entrypoint](commands/entrypoint.py): Entry point script for the application

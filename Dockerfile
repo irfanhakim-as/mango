@@ -1,26 +1,26 @@
-FROM ghcr.io/irfanhakim-as/dim:0.1.1-stable-r1
+FROM ghcr.io/irfanhakim-as/dim:0.2.0-stable-r1
 
-ENV APP="base"
+ARG APP="base"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-COPY entrypoint.sh /
+COPY --chmod=0755 entrypoint.sh /
 
 COPY requirements.txt /tmp/
 
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
 
-COPY root/*.py /${APP}/
+COPY root/* /"${APP}"/
 
 COPY data/*.json data/
 
-COPY models/*.py ${APP}/models/
+COPY models/*.py "${APP}"/models/
 
-COPY settings/*.py ${APP}/conf/
+COPY settings/*.py "${APP}"/conf/
 
-COPY commands/*.py ${APP}/management/commands/
+COPY commands/*.py "${APP}"/management/commands/
 
-COPY base/*.py ${APP}/
+COPY base/*.py "${APP}"/
 
 COPY lib/*.py lib/

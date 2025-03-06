@@ -20,10 +20,17 @@ def instantiate(access_token, home_instance):
         log_message = message("LOG_EVENT", event="Mastodon not configured to be instantiated")
         logger.warning(log_message)
         return
-    return Mastodon(
-        access_token=access_token,
-        api_base_url=home_instance,
-    )
+    try:
+        client = Mastodon(
+            access_token=access_token,
+            api_base_url=home_instance,
+        )
+    except Exception as e:
+        verbose_error = "Mastodon has failed to be instantiated"
+        log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=access_token)
+        logger.error(log_error)
+        return
+    return client
 
 
 #====================MASTODON: CLEAN VISIBILITY====================#

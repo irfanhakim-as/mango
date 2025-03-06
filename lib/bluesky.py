@@ -67,11 +67,17 @@ def instantiate(access_token, account_id):
         log_message = message("LOG_EVENT", event="Bluesky not configured to be instantiated")
         logger.warning(log_message)
         return
-    client = Client()
-    login = client.login(
-        account_id,
-        Path(access_token).read_text().strip(),
-    )
+    try:
+        client = Client()
+        client.login(
+            account_id,
+            Path(access_token).read_text().strip(),
+        )
+    except Exception as e:
+        verbose_error = "Bluesky has failed to be instantiated"
+        log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=account_id)
+        logger.error(log_error)
+        return
     return client
 
 

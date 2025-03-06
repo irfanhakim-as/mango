@@ -15,6 +15,8 @@ from dateutil import (
 from urllib.parse import urlparse
 from django.apps import apps as django_apps
 from django.conf import settings
+from django.db import connection
+from django.http import JsonResponse
 from django.core.exceptions import (
     ImproperlyConfigured,
     ValidationError,
@@ -34,6 +36,15 @@ POST_MODEL = getattr(settings, "POST_MODEL")
 SCHEDULE_MODEL = getattr(settings, "SCHEDULE_MODEL")
 SYNC_CONFIG = getattr(settings, "SYNC_CONFIG", dict())
 TIME_ZONE = getattr(settings, "TIME_ZONE")
+
+
+#====================BASE: CHECK DB====================#
+def check_db():
+    try:
+        connection.ensure_connection()
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": "Database connection failed"}, status=503)
+    return JsonResponse({"status": "ok", "message": "Database connection successful"}, status=200)
 
 
 #====================BASE: IS DEBUG====================#

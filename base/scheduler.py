@@ -98,7 +98,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
             verbose_error = 'Client "%s" has failed to be instantiated' % account_id
             log_error = message("LOG_EXCEPT", exception=e, verbose=verbose_error, object=account.pk)
             logger.error(log_error)
-            return
+            continue
         clients[account.pk] = dict(account_id=account_id, client=client, host=host)
 
     for post_object in post_objects:
@@ -111,7 +111,7 @@ def post_scheduler(pending_objects, updating_objects, **kwargs):
         mastodon_post = prepare_mastodon_post(post_title, post_tags, post_link)
 
         for account in account_objects:
-            account_client = clients.get(account.pk, {})
+            if not (account_client := clients.get(account.pk, None)): continue
             account_id = account_client.get("account_id")
             client = account_client.get("client")
             host = account_client.get("host")
