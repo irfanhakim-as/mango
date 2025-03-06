@@ -119,6 +119,8 @@ def prepare_post(title, tags, link, **kwargs):
 #====================BLUESKY: BUILD RICH POST====================#
 def build_rich_post(client, text, **kwargs):
     embed_only = kwargs.get("embed_only", False)
+    # set facet character limits
+    tag_limit = 64
     link_embed = None
     rich_post = client_utils.TextBuilder()
     # define patterns
