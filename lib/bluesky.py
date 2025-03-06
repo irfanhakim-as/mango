@@ -119,6 +119,8 @@ def prepare_post(title, tags, link, **kwargs):
 #====================BLUESKY: BUILD RICH POST====================#
 def build_rich_post(client, text, **kwargs):
     embed_only = kwargs.get("embed_only", False)
+    # set facet character limits
+    tag_limit = 64
     link_embed = None
     rich_post = client_utils.TextBuilder()
     # define patterns
@@ -156,8 +158,8 @@ def build_rich_post(client, text, **kwargs):
             # split by spaces to handle individual words and hashtags - keep the spaces as separate elements
             words = re.split(r'(\s+)', part)
             for word in words:
-                # build hashtag
-                if re.match(hashtag_pattern, word):
+                # build hashtag if within allowed grapheme limit
+                if re.match(hashtag_pattern, word) and len(word[1:]) <= tag_limit:
                     rich_post.tag(word, word[1:])
                 # build mention if valid
                 elif re.match(mention_pattern, word):
