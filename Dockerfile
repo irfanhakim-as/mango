@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim:0.2.0-pin-r2
+FROM ghcr.io/irfanhakim-as/dim:0.2.0-stable-r1
 
 ARG APP="base"
 
