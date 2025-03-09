@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 export APP_ROOT="${APP_ROOT:-base}"
+export APACHE_USER="${APACHE_USER:-www-data}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
@@ -14,7 +15,7 @@ python3 manage.py migrate
 
 chmod -R 775 "/${APP_ROOT}" /var/log/apache2
 
-chown -R www-data: "/${APP_ROOT}" /var/log/apache2
+chown -R "${APACHE_USER}": "/${APP_ROOT}" /var/log/apache2
 
 python3 manage.py test
 
