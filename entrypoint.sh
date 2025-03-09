@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-export APP_ROOT="base"
+export APP_ROOT="${APP_ROOT:-base}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
