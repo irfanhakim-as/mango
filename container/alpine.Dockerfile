@@ -1,14 +1,19 @@
-FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r2
-
-ENV APP_ROOT="base"
-
-# ================= DO NOT EDIT BEYOND THIS LINE =================
+FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r2 AS builder
 
 COPY dependencies/* /tmp/
 
-RUN . "${PYTHON_VENV_PATH}"/bin/activate && \
-    python3 -m pip install --no-cache-dir -r /tmp/requirements.txt && \
-    rm -rf /tmp/*
+RUN cat /tmp/alpine.build-deps.txt | xargs apk add --no-cache && \
+    . "${PYTHON_VENV_PATH}"/bin/activate && \
+    python3 -m pip install --upgrade pip && \
+    python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+
+# ================================================================
+
+FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r2 AS runtime
+
+ENV APP_ROOT="base"
+
+COPY --from=builder "${PYTHON_VENV_PATH}" "${PYTHON_VENV_PATH}"
 
 COPY --chmod=0755 entrypoint.sh /
 
