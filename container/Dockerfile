@@ -11,14 +11,14 @@ COPY --chmod=0755 entrypoint.sh /
 
 COPY root/* /"${APP_ROOT}"/
 
-COPY data/*.json data/
+COPY data/*.json /"${APP_ROOT}"/data/
 
-COPY models/*.py "${APP_ROOT}"/models/
+COPY models/*.py /"${APP_ROOT}"/"${APP_ROOT}"/models/
 
-COPY settings/*.py "${APP_ROOT}"/conf/
+COPY settings/*.py /"${APP_ROOT}"/"${APP_ROOT}"/conf/
 
-COPY commands/*.py "${APP_ROOT}"/management/commands/
+COPY commands/*.py /"${APP_ROOT}"/"${APP_ROOT}"/management/commands/
 
-COPY base/*.py "${APP_ROOT}"/
+COPY base/*.py /"${APP_ROOT}"/"${APP_ROOT}"/
 
-COPY lib/*.py lib/
+COPY lib/*.py /"${APP_ROOT}"/lib/
