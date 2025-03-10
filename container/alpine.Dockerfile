@@ -14,6 +14,8 @@ RUN rm -rf "${PYTHON_VENV_PATH}"
 
 COPY --from=builder "${PYTHON_VENV_PATH}" "${PYTHON_VENV_PATH}"
 
+RUN ln -sf "${PYTHON_VENV_PATH}"/bin/celery /usr/local/bin/celery
+
 COPY --chmod=0755 entrypoint.sh /
 
 COPY root/* /"${APP_ROOT}"/
