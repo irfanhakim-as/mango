@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r4 AS builder
+FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r6 AS builder
 
 COPY dependencies/* /tmp/
 
@@ -8,7 +8,7 @@ RUN cat /tmp/alpine.build-deps.txt | xargs apk add --no-cache && \
 
 # ================================================================
 
-FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r4 AS runtime
+FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r6 AS runtime
 
 RUN rm -rf "${PYTHON_VENV_PATH}"
 
