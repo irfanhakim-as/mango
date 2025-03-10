@@ -1,6 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim:0.2.0-stable-r1
-
-ARG APP="base"
+FROM ghcr.io/irfanhakim-as/dim:0.2.0-alpine-r1
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
