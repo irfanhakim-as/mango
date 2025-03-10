@@ -9,16 +9,16 @@ RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt \
 
 COPY --chmod=0755 entrypoint.sh /
 
-COPY root/* /"${APP}"/
+COPY root/* /"${APP_ROOT}"/
 
 COPY data/*.json data/
 
-COPY models/*.py "${APP}"/models/
+COPY models/*.py "${APP_ROOT}"/models/
 
-COPY settings/*.py "${APP}"/conf/
+COPY settings/*.py "${APP_ROOT}"/conf/
 
-COPY commands/*.py "${APP}"/management/commands/
+COPY commands/*.py "${APP_ROOT}"/management/commands/
 
-COPY base/*.py "${APP}"/
+COPY base/*.py "${APP_ROOT}"/
 
 COPY lib/*.py lib/
