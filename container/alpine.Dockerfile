@@ -11,6 +11,8 @@ RUN cat /tmp/alpine.build-deps.txt | xargs apk add --no-cache && \
 
 FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r3 AS runtime
 
+RUN rm -rf "${PYTHON_VENV_PATH}"
+
 COPY --from=builder "${PYTHON_VENV_PATH}" "${PYTHON_VENV_PATH}"
 
 COPY --chmod=0755 entrypoint.sh /
