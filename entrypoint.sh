@@ -26,7 +26,11 @@ if [ ${?} -eq 0 ]; then
         /etc/init.d/celeryd start && /etc/init.d/celerybeat start
     fi
 
-    apache2ctl -D FOREGROUND
+    for cmd in apache2ctl httpd; do
+        if [ -x "$(command -v ${cmd})" ]; then
+            "${cmd}" -D FOREGROUND; break
+        fi
+    done
 else
     tail -f /dev/null
 fi
