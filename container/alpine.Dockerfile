@@ -4,7 +4,6 @@ COPY dependencies/* /tmp/
 
 RUN cat /tmp/alpine.build-deps.txt | xargs apk add --no-cache && \
     . "${PYTHON_VENV_PATH}"/bin/activate && \
-    python3 -m pip install --upgrade pip && \
     python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
 # ================================================================
