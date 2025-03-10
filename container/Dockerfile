@@ -6,7 +6,7 @@ ARG APP="base"
 
 COPY dependencies/* /tmp/
 
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt \
     && rm -rf /tmp/*
 
 COPY --chmod=0755 entrypoint.sh /
