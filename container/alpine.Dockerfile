@@ -6,7 +6,6 @@ RUN sort /tmp/alpine.build-deps.txt > /tmp/alpine.build-deps.tmp && \
     apk info | sort > /tmp/alpine.run-deps.tmp && \
     comm -23 /tmp/alpine.build-deps.tmp /tmp/alpine.run-deps.tmp > /tmp/alpine.build-deps.txt && \
     apk add --no-cache --virtual .build-deps $(cat /tmp/alpine.build-deps.txt) && \
-    . "${PYTHON_VENV_PATH}"/bin/activate && \
     python3 -m pip install --no-cache-dir -r /tmp/requirements.txt && \
     ln -sf "${PYTHON_VENV_PATH}"/bin/celery /usr/local/bin/celery && \
     apk del .build-deps && \
