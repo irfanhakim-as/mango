@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-alpine-r6
+FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-preview-r2
 
 COPY dependencies/* /tmp/
 
