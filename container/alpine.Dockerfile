@@ -1,5 +1,7 @@
 FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-preview-r2
 
+# ================= DO NOT EDIT BEYOND THIS LINE =================
+
 COPY dependencies/* /tmp/
 
 RUN sort /tmp/alpine.build-deps.txt > /tmp/alpine.build-deps.tmp && \
