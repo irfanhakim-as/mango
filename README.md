@@ -51,7 +51,7 @@ Mango's list of requirements are as stipulated in the application's [`requiremen
 
 Mango is primarily designed to be deployed and developed upon in a containerised environment.
 
-For the best development and deployment strategy, please use the provided [container image](https://github.com/irfanhakim-as/mango/pkgs/container/mango) as the base of your application:
+For the best development and deployment strategy, please use the provided [container image](https://github.com/irfanhakim-as?tab=packages&repo_name=mango) as the base of your application:
 
 ```Dockerfile
     FROM ghcr.io/irfanhakim-as/mango:latest as base
