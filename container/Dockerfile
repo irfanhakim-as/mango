@@ -4,8 +4,8 @@ FROM ghcr.io/irfanhakim-as/dim:0.2.1-preview-r3
 
 COPY dependencies/* /tmp/
 
-RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt \
-    && rm -rf /tmp/*
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt && \
+    rm -rf /tmp/*
 
 COPY --chmod=0755 entrypoint.sh /
 
