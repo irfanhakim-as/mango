@@ -30,7 +30,7 @@ Mango (previously deriving from ["Mastodon"](https://joinmastodon.org) and ["Dja
 - A robust API for seamless integration across diverse federated platforms
 - Crossposting support to multiple accounts with custom feed configurations
 - Streamlined post and account management for effortless maintenance
-- Containerised for a reliable and secure deployment strategy in any environment
+- Containerised in [Ubuntu](https://github.com/irfanhakim-as/mango/pkgs/container/mango) or minimal [Alpine](https://github.com/irfanhakim-as/mango/pkgs/container/mango-alpine) _flavours_ for a reliable and secure deployment strategy in any environment
 - Enables applications that serve local news from RSS feeds and real-time prayer times for multiple countries
 
 ## Use cases
