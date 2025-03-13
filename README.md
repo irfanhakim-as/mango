@@ -30,7 +30,7 @@ Mango (previously deriving from ["Mastodon"](https://joinmastodon.org) and ["Dja
 - A robust API for seamless integration across diverse federated platforms
 - Crossposting support to multiple accounts with custom feed configurations
 - Streamlined post and account management for effortless maintenance
-- Containerised for a reliable and secure deployment strategy in any environment
+- Containerised in [Ubuntu](https://github.com/irfanhakim-as/mango/pkgs/container/mango) or minimal [Alpine](https://github.com/irfanhakim-as/mango/pkgs/container/mango-alpine) _flavours_ for a reliable and secure deployment strategy
 - Enables applications that serve local news from RSS feeds and real-time prayer times for multiple countries
 
 ## Use cases
@@ -51,7 +51,7 @@ Mango's list of requirements are as stipulated in the application's [`requiremen
 
 Mango is primarily designed to be deployed and developed upon in a containerised environment.
 
-For the best development and deployment strategy, please use the provided [container image](https://github.com/irfanhakim-as/mango/pkgs/container/mango) as the base of your application:
+For the best development and deployment strategy, please use the provided [container image](https://github.com/irfanhakim-as?tab=packages&repo_name=mango) as the base of your application:
 
 ```Dockerfile
     FROM ghcr.io/irfanhakim-as/mango:latest as base

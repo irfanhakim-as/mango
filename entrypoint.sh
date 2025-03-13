@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-export APP_ROOT="base"
+export APP_ROOT="${APP_ROOT:-base}"
+export APACHE_USER="${APACHE_USER:-www-data}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
@@ -14,7 +15,7 @@ python3 manage.py migrate
 
 chmod -R 775 "/${APP_ROOT}" /var/log/apache2
 
-chown -R www-data: "/${APP_ROOT}" /var/log/apache2
+chown -R "${APACHE_USER}": "/${APP_ROOT}" /var/log/apache2
 
 python3 manage.py test
 
@@ -25,7 +26,11 @@ if [ ${?} -eq 0 ]; then
         /etc/init.d/celeryd start && /etc/init.d/celerybeat start
     fi
 
-    apache2ctl -D FOREGROUND
+    for cmd in apache2ctl httpd; do
+        if [ -x "$(command -v ${cmd})" ]; then
+            "${cmd}" -D FOREGROUND; break
+        fi
+    done
 else
     tail -f /dev/null
 fi
