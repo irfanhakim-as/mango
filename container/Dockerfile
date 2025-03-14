@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim:0.2.1-preview-r3
+FROM ghcr.io/irfanhakim-as/dim:0.2.1-stable-r1
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
