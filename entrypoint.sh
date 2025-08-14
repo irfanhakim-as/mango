@@ -2,6 +2,7 @@
 
 export APP_ROOT="${APP_ROOT:-base}"
 export APACHE_USER="${APACHE_USER:-www-data}"
+export LOG_PATH="${LOG_PATH:-'/var/log/django'}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
@@ -9,9 +10,9 @@ python3 manage.py makemigrations
 
 python3 manage.py migrate
 
-chmod -R 775 "/${APP_ROOT}" /var/log/apache2
+chmod -R 775 "/${APP_ROOT}" "${LOG_PATH}"
 
-chown -R "${APACHE_USER}": "/${APP_ROOT}" /var/log/apache2
+chown -R "${APACHE_USER}": "/${APP_ROOT}" "${LOG_PATH}"
 
 python3 manage.py test
 
