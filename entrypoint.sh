@@ -5,10 +5,6 @@ export APACHE_USER="${APACHE_USER:-www-data}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
-if [ -f "/etc/init.d/celeryd" ] && [ -f "/etc/init.d/celerybeat" ]; then
-    BACKEND_SCHEDULER="celery"
-fi
-
 python3 manage.py makemigrations
 
 python3 manage.py migrate
@@ -22,7 +18,7 @@ python3 manage.py test
 if [ ${?} -eq 0 ]; then
     python3 manage.py entrypoint > /dev/null 2>&1
 
-    if [ "${BACKEND_SCHEDULER}" = "celery" ]; then
+    if [ -f "/etc/init.d/celeryd" ] && [ -f "/etc/init.d/celerybeat" ]; then
         /etc/init.d/celeryd start && /etc/init.d/celerybeat start
     fi
 
