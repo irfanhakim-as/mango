@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-export APP_ROOT="${APP_ROOT:-base}"
-export APACHE_USER="${APACHE_USER:-www-data}"
+export APP_ROOT="${APP_ROOT:-'base'}"
+export APACHE_USER="${APACHE_USER:-'www-data'}"
 export LOG_PATH="${LOG_PATH:-'/var/log/django'}"
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
