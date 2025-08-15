@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim-alpine:0.2.1-preview-r4
+FROM ghcr.io/irfanhakim-as/dim-alpine:0.3.0-preview-r1
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
