@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim-alpine:0.3.0-stable-r1
+FROM git.moekai.net/irfan/dim-alpine:0.3.0-stable-r1
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 

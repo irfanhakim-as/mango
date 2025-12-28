@@ -1,4 +1,4 @@
-FROM ghcr.io/irfanhakim-as/dim:0.3.0-stable-r1
+FROM git.moekai.net/irfan/dim:0.3.0-stable-r1
 
 # ================= DO NOT EDIT BEYOND THIS LINE =================
 
