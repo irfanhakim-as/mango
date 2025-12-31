@@ -13,7 +13,7 @@ amqp==5.3.1
 annotated-types==0.7.0
 anyio==4.5.2
 async-timeout==5.0.1
-backports.zoneinfo==0.2.1
+backports.zoneinfo==0.2.1; python_version < "3.9"
 billiard==3.6.4.0
 blurhash==1.1.4
 # certifi==2024.8.30
