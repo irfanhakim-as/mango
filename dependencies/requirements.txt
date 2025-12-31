@@ -6,7 +6,7 @@ celery==5.2.7
 emoji==2.14.0
 Mastodon.py==1.8.0
 pillow==10.4.0
-redis==4.4.0
+redis==7.1.0
 # requests==2.32.3
 # dependencies
 amqp==5.3.1
