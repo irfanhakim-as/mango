@@ -1,6 +1,6 @@
 # libraries
 APScheduler==3.10.1
-atproto==0.0.55
+atproto==0.0.65
 beautifulsoup4==4.12.3
 celery==5.2.7
 emoji==2.14.0
